@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>智舵 - 小舵</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://at.alicdn.com/t/c/font_4431638_cpv7nz8taf4.css" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-55-Regular/AlibabaPuHuiTi-3-55-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-65-Medium/AlibabaPuHuiTi-3-65-Medium.woff2') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-75-SemiBold/AlibabaPuHuiTi-3-75-SemiBold.woff2') format('woff2');
+            font-weight: 600;
+            font-style: normal;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'AlibabaPuHuiTi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background-color: #f8f9fc;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .ios-container {
+            width: 100%;
+            height: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+            background-color: #f8f9fc;
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .status-bar {
+            height: 44px;
+            background-color: #f8f9fc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .status-bar .time {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .status-bar .icons {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-bar .icon {
+            margin-left: 6px;
+        }
+        
+        .chat-header {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+        }
+        
+        .chat-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .back-btn, .more-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .back-btn i, .more-btn i {
+            font-size: 24px;
+            color: #666;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            background-color: #f8f9fc;
+        }
+        
+        .message-day {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin: 8px 0 16px;
+            position: relative;
+        }
+        
+        .message-day:before, .message-day:after {
+            content: "";
+            height: 1px;
+            background-color: #f0f0f0;
+            flex: 1;
+            position: absolute;
+            top: 50%;
+            width: 30%;
+        }
+        
+        .message-day:before {
+            left: 0;
+        }
+        
+        .message-day:after {
+            right: 0;
+        }
+        
+        .message {
+            max-width: 80%;
+            margin-bottom: 16px;
+            position: relative;
+            align-self: flex-start;
+        }
+        
+        .message.system {
+            align-self: flex-start;
+        }
+        
+        .message.user {
+            align-self: flex-end;
+        }
+        
+        .message-content {
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 15px;
+            line-height: 1.5;
+            position: relative;
+        }
+        
+        .system .message-content {
+            background-color: #ffffff;
+            color: #333;
+            border-top-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .user .message-content {
+            background-color: #1a73e8;
+            color: white;
+            border-top-right-radius: 4px;
+            box-shadow: 0 2px 8px rgba(26, 115, 232, 0.1);
+        }
+        
+        .chat-input-container {
+            padding: 10px 16px 30px;
+            background-color: #ffffff;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .function-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+        
+        .scene-switcher {
+            display: flex;
+            align-items: center;
+            background-color: #f5f7fa;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .network-toggle {
+            display: flex;
+            align-items: center;
+            background-color: #f0f5ff;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #1a73e8;
+            margin-left: 0;
+            margin-right: auto;
+        }
+        
+        .network-toggle i {
+            font-size: 18px;
+            margin-right: 4px;
+            color: #1a73e8;
+        }
+        
+        .scene-switcher i, .network-toggle i {
+            font-size: 16px;
+            margin-right: 4px;
+            color: #666;
+        }
+        
+        .scene-switcher .ri-arrow-down-s-line {
+            margin-left: 4px;
+            margin-right: 0;
+        }
+        
+        .scene-switcher:hover, .network-toggle:hover {
+            background-color: #e9ecf1;
+        }
+        
+        .network-toggle.active {
+            background-color: #e8f1ff;
+            color: #1a73e8;
+        }
+        
+        .network-toggle.active i {
+            color: #1a73e8;
+        }
+        
+        .chat-input {
+            display: flex;
+            align-items: center;
+            background-color: #f5f7fa;
+            border-radius: 30px;
+            padding: 10px 16px;
+        }
+        
+        .input-area {
+            flex: 1;
+            font-size: 15px;
+            background: none;
+            border: none;
+            outline: none;
+            color: #333;
+            height: 24px;
+            margin: 0 8px;
+        }
+        
+        .input-tools {
+            display: flex;
+            align-items: center;
+        }
+        
+        .tool-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 4px;
+            cursor: pointer;
+        }
+        
+        .tool-btn i {
+            font-size: 20px;
+            color: #666;
+        }
+        
+        .plus-btn i {
+            font-size: 22px;
+            color: #1a73e8;
+        }
+        
+        .camera-btn {
+            margin-right: 4px;
+        }
+        
+        .camera-btn i {
+            color: #666;
+            font-size: 20px;
+        }
+        
+        /* 扩展菜单样式 */
+        .extended-menu {
+            display: none;
+            justify-content: space-around;
+            padding: 16px 0 8px 0;
+            background-color: #f5f7fa;
+            border-radius: 16px;
+            margin-top: 12px;
+        }
+        
+        .extended-menu-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 70px;
+        }
+        
+        .menu-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .menu-icon i {
+            font-size: 24px;
+            color: #1a73e8;
+        }
+        
+        .menu-text {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* 适配底部安全区域 */
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            .chat-input-container {
+                padding-bottom: calc(10px + env(safe-area-inset-bottom));
+            }
+        }
+        
+        /* 右上角菜单样式 */
+        .more-menu {
+            position: absolute;
+            top: 60px;
+            right: 16px;
+            width: 240px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .new-chat-btn {
+            display: flex;
+            align-items: center;
+            padding: 15px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        
+        .new-chat-btn i {
+            font-size: 20px;
+            color: #1a73e8;
+            margin-right: 10px;
+        }
+        
+        .new-chat-btn .btn-text {
+            font-size: 14px;
+            color: #1a73e8;
+            font-weight: 500;
+        }
+        
+        .history-header {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #666;
+            background-color: #f8f9fc;
+        }
+        
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .history-item i {
+            font-size: 18px;
+            color: #666;
+            margin-right: 10px;
+        }
+        
+        .history-content {
+            flex: 1;
+        }
+        
+        .history-title {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .history-time {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.1);
+            z-index: 99;
+            display: none;
+        }
+        
+        /* Scene dropdown menu */
+        .scene-dropdown {
+            position: absolute;
+            bottom: 65px;
+            left: 10px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 130px;
+            overflow: hidden;
+            z-index: 999;
+            display: none;
+        }
+        
+        .scene-option {
+            padding: 12px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .scene-option:hover, .scene-option.active {
+            background-color: #f5f7fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="ios-container">
+        <div class="status-bar">
+            <div class="time">9:41</div>
+            <div class="icons">
+                <div class="icon">
+                    <i class="ri-signal-wifi-fill"></i>
+                </div>
+                <div class="icon">
+                    <i class="ri-battery-fill"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-header">
+            <div class="back-btn">
+                <i class="ri-close-line"></i>
+            </div>
+            <div class="chat-title">小舵</div>
+            <div class="more-btn">
+                <i class="ri-more-2-fill"></i>
+            </div>
+        </div>
+        
+        <!-- 右上角菜单 -->
+        <div class="more-menu">
+            <div class="new-chat-btn">
+                <i class="ri-add-circle-line"></i>
+                <div class="btn-text">开启新会话</div>
+            </div>
+            <div class="history-header">历史聊天记录</div>
+            <div class="history-list">
+                <div class="history-item">
+                    <i class="ri-chat-1-line"></i>
+                    <div class="history-content">
+                        <div class="history-title">关于Q3季度营收预测分析</div>
+                        <div class="history-time">今天 10:25</div>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <i class="ri-chat-1-line"></i>
+                    <div class="history-content">
+                        <div class="history-title">新开普竞品分析</div>
+                        <div class="history-time">今天 09:18</div>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <i class="ri-chat-1-line"></i>
+                    <div class="history-content">
+                        <div class="history-title">技术团队薪资调整方案</div>
+                        <div class="history-time">昨天 15:42</div>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <i class="ri-chat-1-line"></i>
+                    <div class="history-content">
+                        <div class="history-title">产品路线图讨论</div>
+                        <div class="history-time">昨天 11:30</div>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <i class="ri-chat-1-line"></i>
+                    <div class="history-content">
+                        <div class="history-title">AI教学辅助功能规划</div>
+                        <div class="history-time">06-15 14:20</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="overlay"></div>
+        
+        <div class="chat-messages">
+            <div class="message-day">今天</div>
+            <div class="message system">
+                <div class="message-content">
+                    <p>欢迎使用任务决策智能体，您可以随时掌握全公司任务进展与风险，获取智能建议，并一键下发、跟踪与复盘关键任务。</p>
+                    
+                    <div style="margin-top: 10px; background: #f8f9fc; border-radius: 12px; padding: 12px;">
+                        <div style="margin-bottom: 8px; font-weight: 500; color: #333;">您可以体验以下场景：</div>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div id="query-scenario" style="background: #E8F1FF; color: #1a73e8; padding: 10px 12px; border-radius: 12px; font-size: 14px; cursor: pointer;">一、任务查询场景模拟</div>
+                            <div id="assign-scenario" style="background: #E8F1FF; color: #1a73e8; padding: 10px 12px; border-radius: 12px; font-size: 14px; cursor: pointer;">二、任务下发场景模拟</div>
+                        </div>
+                    </div>
+                    
+                    <p style="margin-top: 8px; font-size: 13px; color: red;">以上任务场景仅作为产品演示，真正上线后CEO在输入框直接输入提示词查询或下发任务。</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <div class="function-bar">
+                <div class="scene-switcher">
+                    <i class="iconfont icon-quanjing"></i>
+                    <span>任务决策</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="network-toggle active">
+                    <i class="ri-global-line"></i>
+                    <span>联网</span>
+                </div>
+            </div>
+            <div class="chat-input">
+                <div class="tool-btn camera-btn">
+                    <i class="ri-camera-line"></i>
+                </div>
+                <input type="text" class="input-area" placeholder="请输入您要了解或下发的任务～" autofocus>
+                <div class="input-tools">
+                    <div class="tool-btn">
+                        <i class="ri-mic-line"></i>
+                    </div>
+                    <div class="tool-btn plus-btn">
+                        <i class="ri-add-line"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 添加扩展菜单，默认隐藏 -->
+            <div class="extended-menu">
+                <div class="extended-menu-item">
+                    <div class="menu-icon">
+                        <i class="ri-camera-line"></i>
+                    </div>
+                    <div class="menu-text">拍照</div>
+                </div>
+                <div class="extended-menu-item">
+                    <div class="menu-icon">
+                        <i class="ri-image-line"></i>
+                    </div>
+                    <div class="menu-text">上传照片</div>
+                </div>
+                <div class="extended-menu-item">
+                    <div class="menu-icon">
+                        <i class="ri-file-line"></i>
+                    </div>
+                    <div class="menu-text">上传文件</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 页面加载完成后自动聚焦输入框
+        window.onload = function() {
+            document.querySelector('.input-area').focus();
+            addTaskManagementExample();
+        };
+        
+        // 返回按钮功能 - 修改为返回上一页
+        const backBtn = document.querySelector('.back-btn');
+        backBtn.addEventListener('click', function() {
+            window.history.back();
+        });
+        
+        // 处理"+"按钮点击事件
+        const plusBtn = document.querySelector('.plus-btn');
+        const extendedMenu = document.querySelector('.extended-menu');
+        let plusMenuVisible = false; // 改名以避免冲突
+        
+        plusBtn.addEventListener('click', function(e) {
+            e.stopPropagation(); // 阻止事件冒泡
+            if (plusMenuVisible) {
+                extendedMenu.style.display = 'none';
+            } else {
+                extendedMenu.style.display = 'flex';
+            }
+            plusMenuVisible = !plusMenuVisible;
+        });
+        
+        // 点击其他区域关闭扩展菜单
+        document.addEventListener('click', function(e) {
+            if (!plusBtn.contains(e.target) && !extendedMenu.contains(e.target) && plusMenuVisible) {
+                extendedMenu.style.display = 'none';
+                plusMenuVisible = false;
+            }
+        });
+        
+        // 处理相机按钮点击事件
+        const cameraBtn = document.querySelector('.camera-btn');
+        cameraBtn.addEventListener('click', function() {
+            // 如果设备支持媒体API，则尝试打开相机
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                alert('正在打开相机...');
+            } else {
+                alert('您的设备不支持相机功能');
+            }
+        });
+        
+        // 实现消息发送功能
+        function sendMessage() {
+            const inputArea = document.querySelector('.input-area');
+            const text = inputArea.value.trim();
+            if (!text) return;
+            
+            // 创建用户消息
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.innerHTML = '<div class="message-content">' + text + '</div>';
+            
+            // 添加到消息列表
+            const chatMessages = document.querySelector('.chat-messages');
+            chatMessages.appendChild(userMsg);
+            
+            // 清空输入框
+            inputArea.value = '';
+            
+            // 滚动到底部
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // 模拟小舵回复
+            setTimeout(() => {
+                // 显示正在输入
+                const typingMsg = document.createElement('div');
+                typingMsg.className = 'message system typing';
+                typingMsg.innerHTML = '<div class="message-content">小舵正在思考...</div>';
+                chatMessages.appendChild(typingMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // 模拟回复延迟
+                setTimeout(() => {
+                    // 移除"正在输入"提示
+                    chatMessages.removeChild(typingMsg);
+                    
+                    // 无论用户输入什么，总是显示欢迎语和演示场景
+                    const systemMsg = document.createElement('div');
+                    systemMsg.className = 'message system';
+                    systemMsg.innerHTML = '<div class="message-content"><p>欢迎使用任务决策智能体，您可以随时掌握全公司任务进展与风险，获取智能建议，并一键下发、跟踪与复盘关键任务。</p><div style="margin-top: 10px; background: #f8f9fc; border-radius: 12px; padding: 12px;"><div style="margin-bottom: 8px; font-weight: 500; color: #333;">您可以体验以下场景：</div><div style="display: flex; flex-direction: column; gap: 10px;"><div id="query-scenario-response" style="background: #E8F1FF; color: #1a73e8; padding: 10px 12px; border-radius: 12px; font-size: 14px; cursor: pointer;">一、任务查询场景模拟</div><div id="assign-scenario-response" style="background: #E8F1FF; color: #1a73e8; padding: 10px 12px; border-radius: 12px; font-size: 14px; cursor: pointer;">二、任务下发场景模拟</div></div></div><p style="margin-top: 8px; font-size: 13px; color: red;">以上任务场景仅作为产品演示，真正上线后CEO在输入框直接输入提示词查询或下发任务。</p></div>';
+                    chatMessages.appendChild(systemMsg);
+                    
+                    // 滚动到底部
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    
+                    // 给新生成的按钮添加事件监听
+                    setTimeout(() => {
+                        const queryScenarioResponse = document.getElementById('query-scenario-response');
+                        const assignScenarioResponse = document.getElementById('assign-scenario-response');
+                        
+                        if (queryScenarioResponse) {
+                            queryScenarioResponse.addEventListener('click', startTaskQueryScenario);
+                        }
+                        
+                        if (assignScenarioResponse) {
+                            assignScenarioResponse.addEventListener('click', startTaskAssignScenario);
+                        }
+                    }, 100);
+                    
+                }, 1500);
+            }, 500);
+        }
+        
+        // 监听输入框回车事件
+        document.querySelector('.input-area').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        // 处理快捷功能点击事件
+        const shortcutItems = document.querySelectorAll('.shortcut-item');
+        shortcutItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const functionName = item.textContent.trim();
+                document.querySelector('.input-area').value = '执行' + functionName + '：';
+                document.querySelector('.input-area').focus();
+            });
+        });
+        
+        // 处理右上角更多按钮点击事件
+        const moreBtn = document.querySelector('.more-btn');
+        const moreMenu = document.querySelector('.more-menu');
+        const overlay = document.querySelector('.overlay');
+        let moreMenuVisible = false; // 改名以避免冲突
+        
+        // 移除更多按钮的点击事件
+        /* 
+        moreBtn.addEventListener('click', function(e) {
+            e.stopPropagation(); // 阻止事件冒泡
+            if (moreMenuVisible) {
+                moreMenu.style.display = 'none';
+                overlay.style.display = 'none';
+            } else {
+                moreMenu.style.display = 'block';
+                overlay.style.display = 'block';
+            }
+            moreMenuVisible = !moreMenuVisible;
+        });
+        */
+        
+        // 点击遮罩层关闭菜单
+        overlay.addEventListener('click', function() {
+            moreMenu.style.display = 'none';
+            overlay.style.display = 'none';
+            moreMenuVisible = false;
+        });
+        
+        // 处理开启新会话按钮点击事件
+        const newChatBtn = document.querySelector('.new-chat-btn');
+        newChatBtn.addEventListener('click', function() {
+            // 清空聊天消息
+            const chatMessages = document.querySelector('.chat-messages');
+            chatMessages.innerHTML = '<div class="message-day">今天</div><div class="message system"><div class="message-content">欢迎使用任务决策智能体，您可以随时掌握全公司任务进展与风险，获取智能建议，并一键下发、跟踪与复盘关键任务。</div></div>';
+            
+            // 关闭菜单
+            moreMenu.style.display = 'none';
+            overlay.style.display = 'none';
+            moreMenuVisible = false;
+        });
+        
+        // 处理历史记录点击事件
+        const historyItems = document.querySelectorAll('.history-item');
+        historyItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const historyTitle = this.querySelector('.history-title').textContent;
+                
+                // 加载相应的历史聊天记录
+                const chatMessages = document.querySelector('.chat-messages');
+                
+                // 根据标题加载不同的历史记录
+                if (historyTitle.includes('营收')) {
+                    chatMessages.innerHTML = '<div class="message-day">今天</div><div class="message user"><div class="message-content">我想了解Q3季度的营收预测情况</div></div><div class="message system"><div class="message-content">根据当前市场走势和前两个季度的表现，预计Q3季度营收将达到2.3亿元，同比增长约12%。不过需要关注两个重点客户的续约情况，如果顺利，增长率可能上升至15%。</div></div><div class="message user"><div class="message-content">这两个客户续约的把握有多大？</div></div><div class="message system"><div class="message-content">根据销售团队的最新反馈，A客户续约可能性约85%，已进入最终审批阶段；B客户约70%，对方正在评估我们的新方案，预计下周会有明确回复。建议您与销售副总裁刘总一起参与B客户的下一次会议，提升续约成功率。</div></div>';
+                } else if (historyTitle.includes('竞品')) {
+                    chatMessages.innerHTML = '<div class="message-day">今天</div><div class="message user"><div class="message-content">最近新开普有什么动向？</div></div><div class="message system"><div class="message-content">新开普上周发布了新一代校园智慧支付解决方案，整合了校园卡、移动支付和身份认证功能。据了解，他们已与20所高校达成合作，估计年内将覆盖100万大学生用户。他们的方案在用户体验和支付场景整合方面有明显优势。</div></div><div class="message user"><div class="message-content">对我们有什么影响？</div></div><div class="message system"><div class="message-content">短期内可能影响我们在校园支付领域的10-15%市场份额。建议我们加快支付系统的升级迭代，同时差异化布局AI教学辅助功能，这是我们的潜在优势领域。下周我会提供一份详细的竞争分析报告，包括应对策略建议。</div></div>';
+                } else if (historyTitle.includes('薪资')) {
+                    chatMessages.innerHTML = '<div class="message-day">昨天</div><div class="message user"><div class="message-content">技术团队最近流失率有点高，怎么看？</div></div><div class="message system"><div class="message-content">技术团队流失率确实高于往年同期，达到了12%（往年平均为7%）。主要原因是行业整体薪资水平上涨，而我们的调整相对滞后。核心技术人员（5年以上经验）的薪资比市场平均低约15%。</div></div><div class="message user"><div class="message-content">有什么建议？</div></div><div class="message system"><div class="message-content">建议进行有针对性的薪酬调整，特别是高价值技术岗位可提高10-15%。同时可考虑实施股权激励计划，绑定核心骨干的长期利益。此外，可加强团队凝聚力建设，包括技术创新奖励、定期技术分享等非物质激励措施。</div></div>';
+                } else if (historyTitle.includes('路线图')) {
+                    chatMessages.innerHTML = '<div class="message-day">昨天</div><div class="message user"><div class="message-content">对下半年产品路线图有什么建议？</div></div><div class="message system"><div class="message-content">建议下半年重点关注三个方向：1）提升现有产品的支付系统，加入更多场景支持；2）开发基于GPT的智能教学辅助功能，提供个性化学习建议；3）加强数据分析平台建设，为学校提供更全面的管理决策支持。同时，提高迭代频率，从月度发布改为双周发布。</div></div><div class="message user"><div class="message-content">哪个方向最有竞争力？</div></div><div class="message system"><div class="message-content">基于大模型的智能教学辅助功能最具差异化优势和成长潜力。我们的数据积累和教育场景理解是显著竞争优势，而且根据市场调研，超过80%的学校有引入AI辅助教学的需求和预算。建议组建专门团队（约8-10人）进行快速开发和测试。</div></div>';
+                } else if (historyTitle.includes('AI')) {
+                    chatMessages.innerHTML = '<div class="message-day">6月15日</div><div class="message user"><div class="message-content">AI教学辅助功能应该包含哪些核心能力？</div></div><div class="message system"><div class="message-content">AI教学辅助功能应包含以下核心能力：1）个性化学习路径规划；2）知识点掌握度分析与弱点识别；3）智能答疑与概念解析；4）学习行为分析与干预建议；5）内容智能推荐；6）教师教学效果分析。基于我们的教育数据积累，可针对不同学科特点定制算法模型。</div></div><div class="message user"><div class="message-content">开发周期大概需要多久？</div></div><div class="message system"><div class="message-content">根据功能复杂度和现有技术储备，预计完整开发周期为5-6个月。但建议采用MVP策略，先开发2-3个核心功能（如智能答疑和知识点弱点识别）快速上线获取反馈，这部分可在2个月内完成。初期可与3-5所重点合作院校进行小范围测试，收集用户反馈后再进行全功能开发。</div></div>';
+                }
+                
+                // 关闭菜单
+                moreMenu.style.display = 'none';
+                overlay.style.display = 'none';
+                moreMenuVisible = false;
+                
+                // 滚动到底部
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+        });
+        
+        // 添加任务管理流程示例
+        function addTaskManagementExample() {
+            const chatMessages = document.querySelector('.chat-messages');
+            
+            // Clear current messages
+            chatMessages.innerHTML = '<div class="message-day">今天</div>';
+            
+            // Add welcome message
+            addSystemMessage('<p>欢迎使用任务决策智能体，您可以随时掌握全公司任务进展与风险，获取智能建议，并一键下发、跟踪与复盘关键任务。</p><div style="margin-top: 10px; background: #f8f9fc; border-radius: 12px; padding: 12px;"><div style="margin-bottom: 8px; font-weight: 500; color: #333;">您可以体验以下场景：</div><div style="display: flex; flex-direction: column; gap: 10px;"><div id="query-scenario" style="background: #E8F1FF; color: #1a73e8; padding: 10px 12px; border-radius: 12px; font-size: 14px; cursor: pointer;">一、任务查询场景模拟</div><div id="assign-scenario" style="background: #E8F1FF; color: #1a73e8; padding: 10px 12px; border-radius: 12px; font-size: 14px; cursor: pointer;">二、任务下发场景模拟</div></div></div><p style="margin-top: 8px; font-size: 13px; color: red;">以上任务场景仅作为产品演示，真正上线后CEO在输入框直接输入提示词查询或下发任务。</p>');
+            
+            // Add click event listeners to scenario buttons after they are created
+            setTimeout(() => {
+                const queryScenario = document.getElementById('query-scenario');
+                const assignScenario = document.getElementById('assign-scenario');
+                
+                if (queryScenario) {
+                    queryScenario.addEventListener('click', startTaskQueryScenario);
+                }
+                
+                if (assignScenario) {
+                    assignScenario.addEventListener('click', startTaskAssignScenario);
+                }
+            }, 100);
+        }
+        
+        // 任务查询场景模拟
+        function startTaskQueryScenario() {
+            const chatMessages = document.querySelector('.chat-messages');
+            
+            // 在同一页面添加选择提示，而不是清除所有消息
+            addSystemMessage('您已选择：<strong>任务查询场景模拟</strong>');
+            addSystemMessage('请输入您想查询的任务');
+            
+            // 自动聚焦输入框，强化在同一页面的体验
+            document.querySelector('.input-area').focus();
+            
+            setTimeout(() => {
+                addUserMessage('查询当前季度重点任务完成情况');
+                
+                setTimeout(() => {
+                    const systemMsg = document.createElement('div');
+                    systemMsg.className = 'message system';
+                    systemMsg.innerHTML = '<div class="message-content"><p><strong>第3季度重点任务完成情况</strong>如下：</p><div style="margin-top: 12px; background: #f8f9fc; border-radius: 12px; padding: 16px;"><div style="margin-bottom: 16px;"><div style="display: flex; align-items: center; margin-bottom: 6px;"><div style="width: 18px; height: 18px; background-color: #1a73e8; border-radius: 4px; margin-right: 8px;"></div><div style="font-weight: 500; font-size: 15px;">新一代校园智慧系统研发</div><div style="margin-left: auto; background-color: #e8f5e9; color: #2ecc71; padding: 2px 8px; border-radius: 10px; font-size: 12px;">正常</div></div><div style="padding-left: 26px; color: #666; font-size: 13px; margin-bottom: 4px;"><span>负责人: 张行</span><span style="margin-left: 20px;">任务阶段: 关口二</span></div><div style="padding-left: 26px; color: #666; font-size: 13px;"><span>计划完成: 10月15日</span><span style="margin-left: 20px;">完成度: <strong>78%</strong></span></div><div style="margin-top: 8px; padding-left: 26px;"><div style="height: 6px; background-color: #f1f1f1; border-radius: 3px; overflow: hidden;"><div style="width: 78%; height: 100%; background-color: #1a73e8;"></div></div></div></div><div style="margin-bottom: 16px;"><div style="display: flex; align-items: center; margin-bottom: 6px;"><div style="width: 18px; height: 18px; background-color: #FF9800; border-radius: 4px; margin-right: 8px;"></div><div style="font-weight: 500; font-size: 15px;">B端客户拓展计划</div><div style="margin-left: auto; background-color: #fff3e0; color: #e67e22; padding: 2px 8px; border-radius: 10px; font-size: 12px;">需关注</div></div><div style="padding-left: 26px; color: #666; font-size: 13px; margin-bottom: 4px;"><span>负责人: 刘宏</span><span style="margin-left: 20px;">任务阶段: 关口三</span></div><div style="padding-left: 26px; color: #666; font-size: 13px;"><span>计划完成: 9月30日</span><span style="margin-left: 20px;">完成度: <strong>65%</strong></span></div><div style="margin-top: 8px; padding-left: 26px;"><div style="height: 6px; background-color: #f1f1f1; border-radius: 3px; overflow: hidden;"><div style="width: 65%; height: 100%; background-color: #FF9800;"></div></div></div></div><div><div style="display: flex; align-items: center; margin-bottom: 6px;"><div style="width: 18px; height: 18px; background-color: #4CAF50; border-radius: 4px; margin-right: 8px;"></div><div style="font-weight: 500; font-size: 15px;">智能教学系统优化</div><div style="margin-left: auto; background-color: #e8f5e9; color: #2ecc71; padding: 2px 8px; border-radius: 10px; font-size: 12px;">已完成</div></div><div style="padding-left: 26px; color: #666; font-size: 13px; margin-bottom: 4px;"><span>负责人: 冯计焰</span><span style="margin-left: 20px;">任务阶段: 关口三</span></div><div style="padding-left: 26px; color: #666; font-size: 13px;"><span>计划完成: 9月15日</span><span style="margin-left: 20px;">完成度: <strong>100%</strong></span></div><div style="margin-top: 8px; padding-left: 26px;"><div style="height: 6px; background-color: #f1f1f1; border-radius: 3px; overflow: hidden;"><div style="width: 100%; height: 100%; background-color: #4CAF50;"></div></div></div></div></div><p style="margin-top: 12px;">您想了解哪个任务的详细情况？</p></div>';
+                    chatMessages.appendChild(systemMsg);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 1000);
+                
+                setTimeout(() => {
+                    addUserMessage('B端客户拓展计划的具体情况');
+                    
+                    setTimeout(() => {
+                        const systemMsg = document.createElement('div');
+                        systemMsg.className = 'message system';
+                        systemMsg.innerHTML = '<div class="message-content"><p><strong>B端客户拓展计划详情</strong>：</p><div style="margin-top: 12px; background: #f8f9fc; border-radius: 12px; padding: 16px;"><div style="margin-bottom: 12px;"><div style="font-weight: 500; color: #FF9800; margin-bottom: 8px;">基本信息</div><table style="width: 100%; font-size: 13px;"><tr><td style="padding: 4px 0; color: #666;">负责人:</td><td style="padding: 4px 0;">刘宏 (销售副总裁)</td></tr><tr><td style="padding: 4px 0; color: #666;">协同部门:</td><td style="padding: 4px 0;">市场部、产品部、客户成功部</td></tr><tr><td style="padding: 4px 0; color: #666;">起止时间:</td><td style="padding: 4px 0;">2023/07/01 - 2023/09/30</td></tr><tr><td style="padding: 4px 0; color: #666;">当前完成度:</td><td style="padding: 4px 0;">65%</td></tr></table></div><div style="margin-bottom: 12px;"><div style="font-weight: 500; color: #FF9800; margin-bottom: 8px;">任务目标</div><div style="display: flex; gap: 10px; margin-bottom: 12px;"><div style="flex: 1; background: #fff; border-radius: 8px; padding: 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);"><div style="font-size: 20px; font-weight: 500; color: #1a73e8;">15</div><div style="font-size: 12px; color: #666;">高校客户</div></div><div style="flex: 1; background: #fff; border-radius: 8px; padding: 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);"><div style="font-size: 20px; font-weight: 500; color: #1a73e8;">10</div><div style="font-size: 12px; color: #666;">K12学校</div></div><div style="flex: 1; background: #fff; border-radius: 8px; padding: 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);"><div style="font-size: 20px; font-weight: 500; color: #1a73e8;">92%</div><div style="font-size: 12px; color: #666;">续约率</div></div></div></div><div style="margin-bottom: 12px;"><div style="font-weight: 500; color: #FF9800; margin-bottom: 8px;">当前进展</div><div style="display: flex; flex-direction: column; gap: 8px;"><div style="display: flex; align-items: center;"><div style="flex: 1;">高校客户</div><div style="width: 60%; background: #f1f1f1; height: 8px; border-radius: 4px; overflow: hidden; margin: 0 10px;"><div style="width: 60%; background: #1a73e8; height: 100%;"></div></div><div style="font-size: 13px;">9/15</div></div><div style="display: flex; align-items: center;"><div style="flex: 1;">K12学校</div><div style="width: 60%; background: #f1f1f1; height: 8px; border-radius: 4px; overflow: hidden; margin: 0 10px;"><div style="width: 80%; background: #4CAF50; height: 100%;"></div></div><div style="font-size: 13px;">8/10</div></div><div style="display: flex; align-items: center;"><div style="flex: 1;">续约率</div><div style="width: 60%; background: #f1f1f1; height: 8px; border-radius: 4px; overflow: hidden; margin: 0 10px;"><div style="width: 89%; background: #FF9800; height: 100%;"></div></div><div style="font-size: 13px;">89%</div></div></div></div><div style="margin-bottom: 12px;"><div style="font-weight: 500; color: #FF9800; margin-bottom: 8px;">突出张力</div><div style="background: #fff; border-radius: 8px; padding: 12px; margin-bottom: 8px;"><div style="font-weight: 500; margin-bottom: 4px; color: #e74c3c;">预算限制阻碍华东区域高校签约</div><div style="font-size: 13px; color: #666;">华东区域3所目标高校因经费预算有限，对产品价格敏感度高，导致签约进度缓慢</div></div><div style="background: #fff; border-radius: 8px; padding: 12px;"><div style="font-weight: 500; margin-bottom: 4px; color: #e74c3c;">西北区域人员配置不足</div><div style="font-size: 13px; color: #666;">销售团队主要集中在华东华南区域，西北区域人员不足，难以有效覆盖目标客户</div></div></div><div style="margin-bottom: 12px;"><div style="font-weight: 500; color: #FF9800; margin-bottom: 8px;">突出张力的处理对策</div><div style="background: #fff; border-radius: 8px; padding: 12px; margin-bottom: 8px;"><div style="font-weight: 500; margin-bottom: 4px; color: #3498db;">华东区域促销方案调整</div><div style="font-size: 13px; color: #666;">1. 针对预算有限的高校客户提供分期付款选项<br>2. 设计"教育普惠计划"，提供首年折扣，锁定长期合作<br>3. 安排CEO与重点高校校长会面，增强合作信心</div></div><div style="background: #fff; border-radius: 8px; padding: 12px;"><div style="font-weight: 500; margin-bottom: 4px; color: #3498db;">西北区域资源优化</div><div style="font-size: 13px; color: #666;">1. 组建专项小组，从华东团队抽调2名经验丰富销售支持西北区域<br>2. 增加西北区域销售奖金系数，提高团队积极性<br>3. 开展线上营销活动，减少现场拜访频次，提高覆盖效率</div></div></div><div style="margin-bottom: 12px;"><div style="font-weight: 500; color: #FF9800; margin-bottom: 8px;">突出张力的处理结果</div><div style="background: #fff; border-radius: 8px; padding: 12px; margin-bottom: 8px;"><div style="font-weight: 500; margin-bottom: 4px; color: #27ae60;">华东区域成效</div><div style="font-size: 13px; color: #666;">1. 已有1所高校接受分期付款方案，进入合同审批阶段<br>2. "教育普惠计划"获得2所高校初步认可，正在商讨细节<br>3. CEO下周将与南京某重点高校校长会面，预计能突破关键障碍</div></div><div style="background: #fff; border-radius: 8px; padding: 12px;"><div style="font-weight: 500; margin-bottom: 4px; color: #27ae60;">西北区域成效</div><div style="font-size: 13px; color: #666;">1. 专项小组成立一周，已与4所目标客户建立联系<br>2. 调整激励方案后，团队拜访频次提升30%<br>3. 线上营销活动吸引12所学校参与，形成3个有效销售线索</div></div></div><div style="margin-bottom: 12px;"><div style="font-weight: 500; color: #FF9800; margin-bottom: 8px;">风险点</div><div style="background: #fff3e0; border-radius: 8px; padding: 10px; margin-bottom: 8px;"><div style="font-weight: 500; margin-bottom: 4px;">华东区域目标高校签约进度缓慢</div><div style="font-size: 13px; color: #666;">3所目标高校受预算限制，需加大促销力度</div></div><div style="background: #fff3e0; border-radius: 8px; padding: 10px;"><div style="font-weight: 500; margin-bottom: 4px;">西北区域开拓不及预期</div><div style="font-size: 13px; color: #666;">需加强销售支持，组建专项小组</div></div></div></div></div><p style="margin-top: 12px;">建议为刘宏提供额外市场预算支持，并考虑调整西北区域的销售激励方案，同时建议您参与华东区域重点高校的拜访，提升签约成功率。</p></div>';
+                        chatMessages.appendChild(systemMsg);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, 1000);
+                }, 3000);
+            }, 1000);
+        }
+        
+        // 任务下发场景模拟
+        function startTaskAssignScenario() {
+            const chatMessages = document.querySelector('.chat-messages');
+            
+            // 在同一页面添加选择提示，而不是清除所有消息
+            addSystemMessage('您已选择：<strong>任务下发场景模拟</strong>');
+            addSystemMessage('请输入您想下发的任务');
+            
+            // 自动聚焦输入框，强化在同一页面的体验
+            document.querySelector('.input-area').focus();
+            
+            setTimeout(() => {
+                addUserMessage('启动产品创新季活动，要求各部门在一个月内提出创新项目，重点关注AI赋能和用户体验优化');
+                
+                // 步骤1：行动计划拆解
+                setTimeout(() => {
+                    const systemMsg = document.createElement('div');
+                    systemMsg.className = 'message system';
+                    systemMsg.innerHTML = '<div class="message-content"><p>已收到任务，正在进行行动计划拆解...</p><div style="width: 100%; height: 4px; background: #f1f1f1; border-radius: 2px; margin-top: 8px; overflow: hidden;"><div style="width: 70%; height: 100%; background: #1a73e8; animation: progress 1.5s linear forwards;"></div></div></div><style>@keyframes progress {0% { width: 0; }100% { width: 100%; }}' + '</style>';
+                    chatMessages.appendChild(systemMsg);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 800);
+                
+                setTimeout(() => {
+                    const systemMsg = document.createElement('div');
+                    systemMsg.className = 'message system';
+                    systemMsg.innerHTML = '<div class="message-content"><p><strong>1. 行动计划拆解完成</strong>：</p><div style="margin-top: 12px; background: #f8f9fc; border-radius: 12px; padding: 16px;"><div style="margin-bottom: 16px;"><div style="display: flex; margin-bottom: 6px;"><div style="width: 24px; height: 24px; border-radius: 12px; background: #1a73e8; color: white; display: flex; align-items: center; justify-content: center; margin-right: 8px;">1</div><div style="font-weight: 500;">活动准备阶段 <span style="color: #666; font-weight: normal; font-size: 13px;">(5天)</span></div></div><div style="padding-left: 32px; margin-bottom: 8px;"><div style="margin-bottom: 4px; display: flex; justify-content: space-between;"><div>1.1 制定活动方案和规则</div><div style="color: #666; font-size: 13px;">2天</div></div><div style="margin-bottom: 4px; display: flex; justify-content: space-between;"><div>1.2 搭建创新项目提交平台</div><div style="color: #666; font-size: 13px;">3天</div></div><div style="display: flex; justify-content: space-between;"><div>1.3 召开启动动员会</div><div style="color: #666; font-size: 13px;">1天</div></div></div></div><div style="margin-bottom: 16px;"><div style="display: flex; margin-bottom: 6px;"><div style="width: 24px; height: 24px; border-radius: 12px; background: #FF9800; color: white; display: flex; align-items: center; justify-content: center; margin-right: 8px;">2</div><div style="font-weight: 500;">创新项目征集阶段 <span style="color: #666; font-weight: normal; font-size: 13px;">(15天)</span></div></div><div style="padding-left: 32px; margin-bottom: 8px;"><div style="margin-bottom: 4px; display: flex; justify-content: space-between;"><div>2.1 各部门内部创意征集和筛选</div><div style="color: #666; font-size: 13px;">10天</div></div><div style="display: flex; justify-content: space-between;"><div>2.2 创新项目初步提案形成</div><div style="color: #666; font-size: 13px;">5天</div></div></div></div><div style="margin-bottom: 16px;"><div style="display: flex; margin-bottom: 6px;"><div style="width: 24px; height: 24px; border-radius: 12px; background: #4CAF50; color: white; display: flex; align-items: center; justify-content: center; margin-right: 8px;">3</div><div style="font-weight: 500;">项目评审阶段 <span style="color: #666; font-weight: normal; font-size: 13px;">(7天)</span></div></div><div style="padding-left: 32px; margin-bottom: 8px;"><div style="margin-bottom: 4px; display: flex; justify-content: space-between;"><div>3.1 项目初审</div><div style="color: #666; font-size: 13px;">3天</div></div><div style="display: flex; justify-content: space-between;"><div>3.2 最终评审和决策</div><div style="color: #666; font-size: 13px;">4天</div></div></div></div><div><div style="display: flex; margin-bottom: 6px;"><div style="width: 24px; height: 24px; border-radius: 12px; background: #9C27B0; color: white; display: flex; align-items: center; justify-content: center; margin-right: 8px;">4</div><div style="font-weight: 500;">结果发布与落地准备 <span style="color: #666; font-weight: normal; font-size: 13px;">(3天)</span></div></div></div></div></div><p style="margin-top: 12px;">请确认行动计划拆解是否合理？</p></div>';
+                    chatMessages.appendChild(systemMsg);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 2500);
+                
+                setTimeout(() => {
+                    addUserMessage('拆解合理，请分配责任人');
+                    
+                    // 步骤2：责任人分配
+                    setTimeout(() => {
+                        const systemMsg = document.createElement('div');
+                        systemMsg.className = 'message system';
+                        systemMsg.innerHTML = '<div class="message-content"><p><strong>2. 责任人分配完成</strong>：</p><div style="margin-top: 12px; background: #f8f9fc; border-radius: 12px; padding: 16px;"><div style="margin-bottom: 16px;"><div style="display: flex; align-items: center; margin-bottom: 6px;"><div style="width: 8px; height: 24px; background: #1a73e8; border-radius: 4px; margin-right: 8px;"></div><div style="font-weight: 500;">活动准备阶段</div><div style="margin-left: auto; background: #e3f2fd; color: #1a73e8; padding: 3px 8px; border-radius: 4px; font-size: 12px;">张行(产品部)</div></div><div style="padding-left: 16px;"><div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><div>制定活动方案和规则</div><div style="color: #1a73e8; font-size: 13px;">李明(创新中心)</div></div><div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><div>搭建创新项目提交平台</div><div style="color: #1a73e8; font-size: 13px;">王强(技术部)</div></div><div style="display: flex; justify-content: space-between;"><div>召开启动动员会</div><div style="color: #1a73e8; font-size: 13px;">冯磊(CEO办公室)</div></div></div></div><div style="margin-bottom: 16px;"><div style="display: flex; align-items: center; margin-bottom: 6px;"><div style="width: 8px; height: 24px; background: #FF9800; border-radius: 4px; margin-right: 8px;"></div><div style="font-weight: 500;">创新项目征集阶段</div><div style="margin-left: auto; background: #fff3e0; color: #FF9800; padding: 3px 8px; border-radius: 4px; font-size: 12px;">各部门负责人</div></div><div style="padding-left: 16px;"><div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><div>各部门内部创意征集和筛选</div><div style="color: #FF9800; font-size: 13px;">部门主管</div></div><div style="display: flex; justify-content: space-between;"><div>创新项目初步提案形成</div><div style="color: #FF9800; font-size: 13px;">部门主管与李明协作</div></div></div></div><div style="margin-bottom: 16px;"><div style="display: flex; align-items: center; margin-bottom: 6px;"><div style="width: 8px; height: 24px; background: #4CAF50; border-radius: 4px; margin-right: 8px;"></div><div style="font-weight: 500;">项目评审阶段</div><div style="margin-left: auto; background: #e8f5e9; color: #4CAF50; padding: 3px 8px; border-radius: 4px; font-size: 12px;">刘宏 & 冯计焰</div></div><div style="padding-left: 16px;"><div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><div>项目初审</div><div style="color: #4CAF50; font-size: 13px;">创新评审委员会</div></div><div style="display: flex; justify-content: space-between;"><div>最终评审和决策</div><div style="color: #4CAF50; font-size: 13px;">高管团队</div></div></div></div><div><div style="display: flex; align-items: center; margin-bottom: 6px;"><div style="width: 8px; height: 24px; background: #9C27B0; border-radius: 4px; margin-right: 8px;"></div><div style="font-weight: 500;">结果发布与落地准备</div><div style="margin-left: auto; background: #f3e5f5; color: #9C27B0; padding: 3px 8px; border-radius: 4px; font-size: 12px;">冯磊(CEO办公室)</div></div></div></div></div><p style="margin-top: 12px;">已将任务分配给相关责任人，请确认或调整。</p></div>';
+                        chatMessages.appendChild(systemMsg);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, 1500);
+                }, 4000);
+                
+                setTimeout(() => {
+                    addUserMessage('分配没问题，请开始执行');
+                    
+                    // 步骤3：任务下发到责任人
+                    setTimeout(() => {
+                        const systemMsg = document.createElement('div');
+                        systemMsg.className = 'message system';
+                        systemMsg.innerHTML = '<div class="message-content"><p><strong>3. 任务下发到责任人</strong>：</p><div style="margin-top: 12px; background: #f8f9fc; border-radius: 12px; padding: 16px;"><div style="display: flex; align-items: center; margin-bottom: 16px;"><i class="ri-mail-send-line" style="color: #1a73e8; font-size: 20px; margin-right: 8px;"></i><div style="font-weight: 500;">任务邮件已发送</div><div style="margin-left: auto; font-size: 12px; color: #666;">2023-09-10 14:22</div></div><div style="background: #fff; border-radius: 8px; padding: 12px; margin-bottom: 16px;"><div style="border-left: 3px solid #1a73e8; padding-left: 10px; margin-bottom: 10px;"><div style="font-weight: 500;">收件人：</div><div style="font-size: 13px; color: #666; margin-top: 4px;">张行, 李明, 王强, 冯磊, 各部门负责人, 创新评审委员会</div></div><div style="border-left: 3px solid #1a73e8; padding-left: 10px;"><div style="font-weight: 500;">邮件主题：</div><div style="font-size: 13px; color: #666; margin-top: 4px;">【任务下发】产品创新季活动启动通知</div></div></div><div style="display: flex; align-items: center;"><i class="ri-wechat-line" style="color: #1a73e8; font-size: 20px; margin-right: 8px;"></i><div style="font-weight: 500;">企业微信通知已发送</div><div style="margin-left: auto; font-size: 12px; color: #666;">2023-09-10 14:22</div></div></div></div><p style="margin-top: 12px;">任务已成功下发至各责任人，并在项目管理系统创建「产品创新季活动」项目。</p></div>';
+                        chatMessages.appendChild(systemMsg);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, 1500);
+                    
+                    // 步骤4：任务过程跟踪
+                    setTimeout(() => {
+                        const systemMsg = document.createElement('div');
+                        systemMsg.className = 'message system';
+                        systemMsg.innerHTML = '<div class="message-content"><p><strong>4. 任务过程跟踪</strong>：</p><div style="margin-top: 12px; background: #f8f9fc; border-radius: 12px; padding: 16px;"><div style="margin-bottom: 16px;"><div style="font-weight: 500; margin-bottom: 8px;">进度追踪计划</div><div style="display: flex; align-items: center; margin-bottom: 12px;"><i class="ri-calendar-check-line" style="color: #1a73e8; font-size: 18px; margin-right: 8px;"></i><div>已设置每周五下午5点自动生成进度报告，通过邮件发送给您</div></div><div style="display: flex; align-items: center; margin-bottom: 8px;"><i class="ri-timer-line" style="color: #1a73e8; font-size: 18px; margin-right: 8px;"></i><div>任务节点到期前24小时自动提醒负责人</div></div></div><div style="margin-bottom: 16px;"><div style="font-weight: 500; margin-bottom: 8px;">关键节点监控</div><div style="background: #fff; border-radius: 8px; padding: 12px; margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;"><div style="font-weight: 500;">活动方案确定</div><div style="color: #2ecc71;">2023-09-12</div></div><div style="height: 6px; background-color: #f1f1f1; border-radius: 3px; overflow: hidden;"><div style="width: 35%; height: 100%; background-color: #1a73e8;"></div></div></div><div style="background: #fff; border-radius: 8px; padding: 12px; margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;"><div style="font-weight: 500;">创新项目提交平台上线</div><div style="color: #2ecc71;">2023-09-15</div></div><div style="height: 6px; background-color: #f1f1f1; border-radius: 3px; overflow: hidden;"><div style="width: 20%; height: 100%; background-color: #1a73e8;"></div></div></div><div style="background: #fff; border-radius: 8px; padding: 12px;"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;"><div style="font-weight: 500;">启动动员会</div><div style="color: #2ecc71;">2023-09-16</div></div><div style="height: 6px; background-color: #f1f1f1; border-radius: 3px; overflow: hidden;"><div style="width: 10%; height: 100%; background-color: #1a73e8;"></div></div></div></div></div></div><p style="margin-top: 12px;">我将实时跟踪任务进展，并在每周五向您汇报，您也可以随时查询任务进展情况。</p></div>';
+                        chatMessages.appendChild(systemMsg);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, 3500);
+                    
+                    // 步骤5：任务风险预警与建议
+                    setTimeout(() => {
+                        const systemMsg = document.createElement('div');
+                        systemMsg.className = 'message system';
+                        systemMsg.innerHTML = '<div class="message-content"><p><strong>5. 任务风险预警与建议</strong>：</p><div style="margin-top: 12px; background: #f8f9fc; border-radius: 12px; padding: 16px;"><div style="margin-bottom: 16px;"><div style="font-weight: 500; margin-bottom: 8px;">潜在风险识别</div><div style="background: #fff3e0; border-radius: 8px; padding: 12px; margin-bottom: 8px;"><div style="display: flex; align-items: center;"><i class="ri-error-warning-line" style="color: #e67e22; font-size: 18px; margin-right: 8px;"></i><div style="font-weight: 500; color: #e67e22;">创新项目提交平台开发可能延期</div></div><div style="margin-top: 6px; padding-left: 26px; font-size: 13px; color: #666;">当前技术团队资源有限，平台开发进度存在不确定性</div></div><div style="background: #fff3e0; border-radius: 8px; padding: 12px;"><div style="display: flex; align-items: center;"><i class="ri-error-warning-line" style="color: #e67e22; font-size: 18px; margin-right: 8px;"></i><div style="font-weight: 500; color: #e67e22;">部分部门参与度不足风险</div></div><div style="margin-top: 6px; padding-left: 26px; font-size: 13px; color: #666;">运维和财务等支持部门参与创新活动热情可能不高</div></div></div><div style="margin-bottom: 16px;"><div style="font-weight: 500; margin-bottom: 8px;">风险应对建议</div><div style="background: #e8f5e9; border-radius: 8px; padding: 12px; margin-bottom: 8px;"><div style="display: flex; align-items: center;"><i class="ri-lightbulb-line" style="color: #2ecc71; font-size: 18px; margin-right: 8px;"></i><div style="font-weight: 500; color: #2ecc71;">提前排期技术资源</div></div><div style="margin-top: 6px; padding-left: 26px; font-size: 13px; color: #666;">建议提前与技术部门负责人王强沟通，确保分配足够资源优先开发创新项目提交平台</div></div><div style="background: #e8f5e9; border-radius: 8px; padding: 12px;"><div style="display: flex; align-items: center;"><i class="ri-lightbulb-line" style="color: #2ecc71; font-size: 18px; margin-right: 8px;"></i><div style="font-weight: 500; color: #2ecc71;">设置支持部门专项激励</div></div><div style="margin-top: 6px; padding-left: 26px; font-size: 13px; color: #666;">为运维和财务等支持部门设置专项创新奖金池，增加参与积极性</div></div></div></div></div><p style="margin-top: 12px;">我会持续监控以上风险点，并在情况变化时及时提醒您，请问您对以上风险及建议有什么指示？</p></div>';
+                        chatMessages.appendChild(systemMsg);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, 5500);
+                    
+                    setTimeout(() => {
+                        addUserMessage('同意风险应对建议，请继续跟进');
+                        
+                        // 步骤6：任务完成通知（模拟未来某日）
+                        setTimeout(() => {
+                            const systemMsg = document.createElement('div');
+                            systemMsg.className = 'message system';
+                            systemMsg.innerHTML = '<div class="message-content"><div style="background: #e8f5e9; margin-bottom: 12px; border-radius: 12px; padding: 16px;"><div style="display: flex; align-items: center; margin-bottom: 8px;"><i class="ri-check-double-line" style="color: #2ecc71; font-size: 20px; margin-right: 8px;"></i><div style="font-weight: 500; font-size: 16px;"><strong>6. 任务完成通知</strong></div></div><div style="margin-left: 28px;"><p style="margin-bottom: 8px;">「产品创新季活动」任务已于2023年10月10日顺利完成。</p><div style="display: flex; align-items: center; margin-top: 12px;"><i class="ri-trophy-line" style="color: #f39c12; font-size: 18px; margin-right: 8px;"></i><span>共收集创新项目<strong>42</strong>个，评选出<strong>8</strong>个优秀项目进入立项阶段</span></div></div></div><div style="background: #f8f9fc; border-radius: 12px; padding: 16px;"><p style="font-weight: 500; margin-bottom: 8px;"><strong>7. 任务复盘报告</strong></p><div style="background: #fff; border-radius: 8px; padding: 12px; margin-bottom: 12px;"><div style="display: flex; align-items: center; margin-bottom: 8px;"><i class="ri-file-text-line" style="color: #1a73e8; font-size: 18px; margin-right: 8px;"></i><div style="font-weight: 500;">产品创新季活动复盘报告</div></div><div style="font-size: 13px; color: #666; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px;">由智能体自动生成，包含活动完整过程、参与情况、创新项目分布、优秀项目介绍及经验总结。</div><div style="margin-bottom: 12px;"><div style="font-weight: 500; margin-bottom: 6px; color: #1a73e8;">时间计划与实际达成对比</div><div style="background: #f8f9fc; border-radius: 8px; padding: 10px; font-size: 13px;"><table style="width: 100%;"><tr style="border-bottom: 1px solid #eee;"><th style="text-align: left; padding: 5px 0; width: 40%;">任务阶段</th><th style="text-align: left; padding: 5px 0; width: 30%;">计划时间</th><th style="text-align: left; padding: 5px 0; width: 30%;">实际完成</th></tr><tr><td style="padding: 5px 0;">活动准备阶段</td><td style="padding: 5px 0;">5天</td><td style="padding: 5px 0;">6天 <span style="color: #e74c3c;">(+1)</span></td></tr><tr><td style="padding: 5px 0;">创新项目征集阶段</td><td style="padding: 5px 0;">15天</td><td style="padding: 5px 0;">18天 <span style="color: #e74c3c;">(+3)</span></td></tr><tr><td style="padding: 5px 0;">项目评审阶段</td><td style="padding: 5px 0;">7天</td><td style="padding: 5px 0;">5天 <span style="color: #2ecc71;">(-2)</span></td></tr><tr><td style="padding: 5px 0;">结果发布与落地准备</td><td style="padding: 5px 0;">3天</td><td style="padding: 5px 0;">3天</td></tr><tr><td style="padding: 5px 0;"><strong>总计</strong></td><td style="padding: 5px 0;"><strong>30天</strong></td><td style="padding: 5px 0;"><strong>32天</strong> <span style="color: #e74c3c;">(+2)</span></td></tr></table></div></div><div style="margin-bottom: 12px;"><div style="font-weight: 500; margin-bottom: 6px; color: #1a73e8;">创新项目分布</div><div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><div style="background: #e3f2fd; border-radius: 4px; padding: 8px 12px; text-align: center; width: 31%;"><div style="font-weight: 500;">57%</div><div style="font-size: 12px;">AI赋能类</div></div><div style="background: #e3f2fd; border-radius: 4px; padding: 8px 12px; text-align: center; width: 31%;"><div style="font-weight: 500;">32%</div><div style="font-size: 12px;">用户体验优化</div></div><div style="background: #e3f2fd; border-radius: 4px; padding: 8px 12px; text-align: center; width: 31%;"><div style="font-weight: 500;">11%</div><div style="font-size: 12px;">其他创新</div></div></div></div><div style="margin-bottom: 12px;"><div style="font-weight: 500; margin-bottom: 6px; color: #1a73e8;">部门参与度</div><div style="background: #f8f9fc; border-radius: 8px; padding: 10px;"><div style="display: flex; align-items: center; margin-bottom: 5px;"><div style="width: 80px;">技术部</div><div style="flex: 1; height: 8px; background: #f1f1f1; border-radius: 4px; margin: 0 10px; overflow: hidden;"><div style="width: 95%; height: 100%; background: #4CAF50;"></div></div><div style="width: 30px; font-size: 12px;">95%</div></div><div style="display: flex; align-items: center; margin-bottom: 5px;"><div style="width: 80px;">产品部</div><div style="flex: 1; height: 8px; background: #f1f1f1; border-radius: 4px; margin: 0 10px; overflow: hidden;"><div style="width: 90%; height: 100%; background: #4CAF50;"></div></div><div style="width: 30px; font-size: 12px;">90%</div></div><div style="display: flex; align-items: center; margin-bottom: 5px;"><div style="width: 80px;">市场部</div><div style="flex: 1; height: 8px; background: #f1f1f1; border-radius: 4px; margin: 0 10px; overflow: hidden;"><div style="width: 85%; height: 100%; background: #4CAF50;"></div></div><div style="width: 30px; font-size: 12px;">85%</div></div><div style="display: flex; align-items: center; margin-bottom: 5px;"><div style="width: 80px;">销售部</div><div style="flex: 1; height: 8px; background: #f1f1f1; border-radius: 4px; margin: 0 10px; overflow: hidden;"><div style="width: 75%; height: 100%; background: #4CAF50;"></div></div><div style="width: 30px; font-size: 12px;">75%</div></div><div style="display: flex; align-items: center;"><div style="width: 80px;">财务部</div><div style="flex: 1; height: 8px; background: #f1f1f1; border-radius: 4px; margin: 0 10px; overflow: hidden;"><div style="width: 60%; height: 100%; background: #FF9800;"></div></div><div style="width: 30px; font-size: 12px;">60%</div></div></div></div><div style="margin-bottom: 12px;"><div style="font-weight: 500; margin-bottom: 6px; color: #1a73e8;">优秀项目概览</div><div style="background: #f5f5f5; border-radius: 8px; padding: 10px; margin-bottom: 8px;"><div style="font-weight: 500; margin-bottom: 4px;">AI智能学习路径生成器</div><div style="font-size: 12px; color: #666; margin-bottom: 4px;">提出部门：技术部 - 张伟团队</div><div style="font-size: 13px;">基于大模型与学生历史数据，为学生自动生成个性化学习路径，预计可提升学习效率30%以上</div></div><div style="background: #f5f5f5; border-radius: 8px; padding: 10px;"><div style="font-weight: 500; margin-bottom: 4px;">一站式校园服务平台</div><div style="font-size: 12px; color: #666; margin-bottom: 4px;">提出部门：产品部 - 李明团队</div><div style="font-size: 13px;">整合支付、身份验证、信息查询等功能，打造校园服务超级App，提升用户留存率与活跃度</div></div></div></div><div style="background: #fff; border-radius: 8px; padding: 12px;"><div style="font-weight: 500; margin-bottom: 8px; color: #1a73e8;">项目经验与改进建议</div><div style="margin-bottom: 12px;"><div style="font-weight: 500; margin-bottom: 4px;">成功经验</div><ul style="padding-left: 20px; margin: 0; font-size: 13px; color: #333;"><li style="margin-bottom: 4px;">提前邀请创新中心专家参与，大幅提升了项目质量和可行性</li><li style="margin-bottom: 4px;">采用线上提案+线下路演相结合的方式，激发了员工创造力</li><li style="margin-bottom: 4px;">设置专项奖金激励机制，有效提升了财务等支持部门参与度</li></ul></div><div><div style="font-weight: 500; margin-bottom: 4px;">改进建议</div><ul style="padding-left: 20px; margin: 0; font-size: 13px; color: #333;"><li style="margin-bottom: 4px;">平台开发延期导致项目征集阶段推迟，建议下次提前2周启动技术准备</li><li style="margin-bottom: 4px;">部分创意缺乏成本和投入产出评估，建议增加商业价值评估环节</li><li style="margin-bottom: 4px;">跨部门协作仍有障碍，建议优化协作流程和激励机制</li><li>建议建立创新项目追踪机制，确保优秀创意能够真正落地实施</li></ul></div></div></div></div><p style="margin-top: 12px;">任务全流程已完成，复盘报告已自动归档至企业知识库。您可以在"全部任务"-"已完成"中查看详情。</p></div>';
+                            chatMessages.appendChild(systemMsg);
+                            chatMessages.scrollTop = chatMessages.scrollHeight;
+                        }, 1500);
+                        
+                        setTimeout(() => {
+                            addSystemMessage('<p style="margin-top: 12px; font-size: 14px;">任务全流程模拟完成，您可以继续输入指令或提问。</p>');
+                            chatMessages.scrollTop = chatMessages.scrollHeight;
+                        }, 3500);
+                    }, 7500);
+                }, 7000);
+            }, 1000);
+        }
+        
+        // 添加系统消息的辅助函数
+        function addSystemMessage(text) {
+            const chatMessages = document.querySelector('.chat-messages');
+            const systemMsg = document.createElement('div');
+            systemMsg.className = 'message system';
+            systemMsg.innerHTML = '<div class="message-content">' + text + '</div>';
+            chatMessages.appendChild(systemMsg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return systemMsg;
+        }
+        
+        // 添加用户消息的辅助函数
+        function addUserMessage(text) {
+            const chatMessages = document.querySelector('.chat-messages');
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.innerHTML = '<div class="message-content">' + text + '</div>';
+            chatMessages.appendChild(userMsg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Add this to the existing script section, near the end
+        
+        // Scene switcher functionality
+        const sceneSwitcher = document.querySelector('.scene-switcher');
+        let sceneDropdown;
+        
+        sceneSwitcher.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent event from bubbling up
+            
+            // Create dropdown if it doesn't exist
+            if (!sceneDropdown) {
+                sceneDropdown = document.createElement('div');
+                sceneDropdown.className = 'scene-dropdown';
+                sceneDropdown.innerHTML = `
+                    <div class="scene-option">通用场景</div>
+                    <div class="scene-option active">任务决策</div>
+                    <div class="scene-option">经营决策</div>
+                    <div class="scene-option">战略决策</div>
+                `;
+                document.querySelector('.chat-input-container').appendChild(sceneDropdown);
+                
+                // Position the dropdown properly
+                const rect = sceneSwitcher.getBoundingClientRect();
+                sceneDropdown.style.position = 'absolute';
+                sceneDropdown.style.bottom = '65px'; // Position above the input
+                sceneDropdown.style.left = '10px';
+                
+                // Add click events to options
+                const sceneOptions = sceneDropdown.querySelectorAll('.scene-option');
+                sceneOptions.forEach(option => {
+                    option.addEventListener('click', function(e) {
+                        e.stopPropagation(); // Prevent event bubbling
+                        
+                        // Navigate to appropriate page based on selection
+                        const selectedText = this.textContent;
+                        switch(selectedText) {
+                            case '通用场景':
+                                window.location.href = 'chat.html';
+                                return;
+                            case '任务决策':
+                                window.location.href = 'task_agent.html';
+                                return;
+                            case '经营决策':
+                                window.location.href = 'fund_agent.html';
+                                return;
+                            case '战略决策':
+                                window.location.href = 'strategy_agent.html';
+                                return;
+                        }
+                        
+                        // Update active state
+                        sceneOptions.forEach(opt => opt.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // Update scene switcher text
+                        sceneSwitcher.querySelector('span').textContent = this.textContent;
+                        
+                        // Hide dropdown
+                        sceneDropdown.style.display = 'none';
+                    });
+                });
+            }
+            
+            // Toggle dropdown visibility
+            if (getComputedStyle(sceneDropdown).display !== 'none') {
+                sceneDropdown.style.display = 'none';
+            } else {
+                sceneDropdown.style.display = 'block';
+            }
+        });
+        
+        // Network toggle functionality
+        const networkToggle = document.querySelector('.network-toggle');
+        networkToggle.addEventListener('click', function() {
+            this.classList.toggle('active');
+            if (this.classList.contains('active')) {
+                this.querySelector('span').textContent = '联网';
+            } else {
+                this.querySelector('span').textContent = '不联网';
+            }
+        });
+        
+        // Hide scene dropdown when clicking elsewhere
+        document.addEventListener('click', function(e) {
+            if (sceneDropdown && sceneDropdown.style.display === 'block' && !sceneSwitcher.contains(e.target) && !sceneDropdown.contains(e.target)) {
+                sceneDropdown.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html> 

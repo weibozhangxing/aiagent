@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>智舵 - 小舵</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://at.alicdn.com/t/c/font_4431638_cpv7nz8taf4.css" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-55-Regular/AlibabaPuHuiTi-3-55-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-65-Medium/AlibabaPuHuiTi-3-65-Medium.woff2') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-75-SemiBold/AlibabaPuHuiTi-3-75-SemiBold.woff2') format('woff2');
+            font-weight: 600;
+            font-style: normal;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'AlibabaPuHuiTi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background-color: #f8f9fc;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .ios-container {
+            width: 100%;
+            height: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+            background-color: #f8f9fc;
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .status-bar {
+            height: 44px;
+            background-color: #f8f9fc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .status-bar .time {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .status-bar .icons {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-bar .icon {
+            margin-left: 6px;
+        }
+        
+        .chat-header {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+        }
+        
+        .chat-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .back-btn, .more-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .back-btn i, .more-btn i {
+            font-size: 24px;
+            color: #666;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            background-color: #f8f9fc;
+        }
+        
+        .message-day {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin: 8px 0 16px;
+            position: relative;
+        }
+        
+        .message-day:before, .message-day:after {
+            content: "";
+            height: 1px;
+            background-color: #f0f0f0;
+            flex: 1;
+            position: absolute;
+            top: 50%;
+            width: 30%;
+        }
+        
+        .message-day:before {
+            left: 0;
+        }
+        
+        .message-day:after {
+            right: 0;
+        }
+        
+        .message {
+            max-width: 80%;
+            margin-bottom: 16px;
+            position: relative;
+            align-self: flex-start;
+        }
+        
+        .message.system {
+            align-self: flex-start;
+        }
+        
+        .message.user {
+            align-self: flex-end;
+        }
+        
+        .message-content {
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 15px;
+            line-height: 1.5;
+            position: relative;
+        }
+        
+        .system .message-content {
+            background-color: #ffffff;
+            color: #333;
+            border-top-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .user .message-content {
+            background-color: #1a73e8;
+            color: white;
+            border-top-right-radius: 4px;
+            box-shadow: 0 2px 8px rgba(26, 115, 232, 0.1);
+        }
+        
+        .chat-input-container {
+            padding: 10px 16px 30px;
+            background-color: #ffffff;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        /* 替换快捷功能入口栏为模型和网络切换功能 */
+        .function-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+        
+        .scene-switcher {
+            display: flex;
+            align-items: center;
+            background-color: #f5f7fa;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .network-toggle {
+            display: flex;
+            align-items: center;
+            background-color: #f0f5ff;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #1a73e8;
+            margin-left: 0;
+            margin-right: auto;
+        }
+        
+        .network-toggle i {
+            font-size: 18px;
+            margin-right: 4px;
+            color: #1a73e8;
+        }
+        
+        .scene-switcher i, .network-toggle i {
+            font-size: 16px;
+            margin-right: 4px;
+            color: #666;
+        }
+        
+        .scene-switcher .ri-arrow-down-s-line {
+            margin-left: 4px;
+            margin-right: 0;
+        }
+        
+        .scene-switcher:hover, .network-toggle:hover {
+            background-color: #e9ecf1;
+        }
+        
+        .network-toggle.active {
+            background-color: #e8f1ff;
+            color: #1a73e8;
+        }
+        
+        .network-toggle.active i {
+            color: #1a73e8;
+        }
+        
+        /* Scene dropdown menu */
+        .scene-dropdown {
+            position: absolute;
+            bottom: 65px;
+            left: 10px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 130px;
+            overflow: hidden;
+            z-index: 999;
+            display: none;
+        }
+        
+        .scene-option {
+            padding: 12px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .scene-option:hover, .scene-option.active {
+            background-color: #f5f7fa;
+        }
+        
+        .chat-input {
+            display: flex;
+            align-items: center;
+            background-color: #f5f7fa;
+            border-radius: 30px;
+            padding: 10px 16px;
+        }
+        
+        .input-area {
+            flex: 1;
+            font-size: 15px;
+            background: none;
+            border: none;
+            outline: none;
+            color: #333;
+            height: 24px;
+            margin: 0 8px;
+        }
+        
+        .input-tools {
+            display: flex;
+            align-items: center;
+        }
+        
+        .tool-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 4px;
+            cursor: pointer;
+        }
+        
+        .tool-btn i {
+            font-size: 20px;
+            color: #666;
+        }
+        
+        .plus-btn i {
+            font-size: 22px;
+            color: #1a73e8;
+        }
+        
+        .camera-btn {
+            margin-right: 4px;
+        }
+        
+        .camera-btn i {
+            color: #666;
+            font-size: 20px;
+        }
+        
+        /* 扩展菜单样式 */
+        .extended-menu {
+            display: none;
+            justify-content: space-around;
+            padding: 16px 0 8px 0;
+            background-color: #f5f7fa;
+            border-radius: 16px;
+            margin-top: 12px;
+        }
+        
+        .extended-menu-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 70px;
+        }
+        
+        .menu-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .menu-icon i {
+            font-size: 24px;
+            color: #1a73e8;
+        }
+        
+        .menu-text {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* 适配底部安全区域 */
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            .chat-input-container {
+                padding-bottom: calc(10px + env(safe-area-inset-bottom));
+            }
+        }
+        
+        /* 右上角菜单样式 */
+        .more-menu {
+            position: absolute;
+            top: 60px;
+            right: 16px;
+            width: 240px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .new-chat-btn {
+            display: flex;
+            align-items: center;
+            padding: 15px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        
+        .new-chat-btn i {
+            font-size: 20px;
+            color: #1a73e8;
+            margin-right: 10px;
+        }
+        
+        .new-chat-btn .btn-text {
+            font-size: 14px;
+            color: #1a73e8;
+            font-weight: 500;
+        }
+        
+        .history-header {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #666;
+            background-color: #f8f9fc;
+        }
+        
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .history-item i {
+            font-size: 18px;
+            color: #666;
+            margin-right: 10px;
+        }
+        
+        .history-content {
+            flex: 1;
+        }
+        
+        .history-title {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .history-time {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.1);
+            z-index: 99;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="ios-container">
+        <div class="status-bar">
+            <div class="time">9:41</div>
+            <div class="icons">
+                <div class="icon">
+                    <i class="ri-signal-wifi-fill"></i>
+                </div>
+                <div class="icon">
+                    <i class="ri-battery-fill"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-header">
+            <div class="back-btn">
+                <i class="ri-close-line"></i>
+            </div>
+            <div class="chat-title">小舵</div>
+            <div class="more-btn">
+                <i class="ri-more-2-fill"></i>
+            </div>
+        </div>
+        
+        <!-- 右上角菜单 -->
+        <div class="more-menu">
+            <div class="new-chat-btn">
+                <i class="ri-add-circle-line"></i>
+                <div class="btn-text">开启新会话</div>
+            </div>
+            <div class="history-header">历史聊天记录</div>
+            <div class="history-list">
+                <div class="history-item">
+                    <i class="ri-chat-1-line"></i>
+                    <div class="history-content">
+                        <div class="history-title">关于Q3季度营收预测分析</div>
+                        <div class="history-time">今天 10:25</div>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <i class="ri-chat-1-line"></i>
+                    <div class="history-content">
+                        <div class="history-title">新开普竞品分析</div>
+                        <div class="history-time">今天 09:18</div>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <i class="ri-chat-1-line"></i>
+                    <div class="history-content">
+                        <div class="history-title">技术团队薪资调整方案</div>
+                        <div class="history-time">昨天 15:42</div>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <i class="ri-chat-1-line"></i>
+                    <div class="history-content">
+                        <div class="history-title">产品路线图讨论</div>
+                        <div class="history-time">昨天 11:30</div>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <i class="ri-chat-1-line"></i>
+                    <div class="history-content">
+                        <div class="history-title">AI教学辅助功能规划</div>
+                        <div class="history-time">06-15 14:20</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="overlay"></div>
+        
+        <div class="chat-messages">
+            <div class="message-day">今天</div>
+            <div class="message system">
+                <div class="message-content">您好，我是您的专属AI助手小舵。我可以帮您查看公司经营数据、进行决策分析、市场调研、学习企业经营知识等。请问今天有什么可以帮到您？</div>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <!-- 替换快捷功能入口栏为模型和网络切换功能 -->
+            <div class="function-bar">
+                <div class="scene-switcher">
+                    <i class="iconfont icon-quanjing"></i>
+                    <span>通用场景</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="network-toggle active">
+                    <i class="ri-global-line"></i>
+                    <span>联网</span>
+                </div>
+            </div>
+            
+            <div class="chat-input">
+                <div class="tool-btn camera-btn">
+                    <i class="ri-camera-line"></i>
+                </div>
+                <input type="text" class="input-area" placeholder="有什么可以帮您分析或决策的？" autofocus>
+                <div class="input-tools">
+                    <div class="tool-btn">
+                        <i class="ri-mic-line"></i>
+                    </div>
+                    <div class="tool-btn plus-btn">
+                        <i class="ri-add-line"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 添加扩展菜单，默认隐藏 -->
+            <div class="extended-menu">
+                <div class="extended-menu-item">
+                    <div class="menu-icon">
+                        <i class="ri-camera-line"></i>
+                    </div>
+                    <div class="menu-text">拍照</div>
+                </div>
+                <div class="extended-menu-item">
+                    <div class="menu-icon">
+                        <i class="ri-image-line"></i>
+                    </div>
+                    <div class="menu-text">上传照片</div>
+                </div>
+                <div class="extended-menu-item">
+                    <div class="menu-icon">
+                        <i class="ri-file-line"></i>
+                    </div>
+                    <div class="menu-text">上传文件</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 页面加载完成后自动聚焦输入框
+        window.onload = function() {
+            document.querySelector('.input-area').focus();
+        };
+        
+        // 返回按钮功能 - 修复为返回 home.html
+        const backBtn = document.querySelector('.back-btn');
+        backBtn.addEventListener('click', function() {
+            window.location.href = 'home.html';
+        });
+        
+        // 处理"+"按钮点击事件
+        const plusBtn = document.querySelector('.plus-btn');
+        const extendedMenu = document.querySelector('.extended-menu');
+        let plusMenuVisible = false; // 改名以避免冲突
+        
+        plusBtn.addEventListener('click', function(e) {
+            e.stopPropagation(); // 阻止事件冒泡
+            if (plusMenuVisible) {
+                extendedMenu.style.display = 'none';
+            } else {
+                extendedMenu.style.display = 'flex';
+            }
+            plusMenuVisible = !plusMenuVisible;
+        });
+        
+        // 点击其他区域关闭扩展菜单
+        document.addEventListener('click', function(e) {
+            if (!plusBtn.contains(e.target) && !extendedMenu.contains(e.target) && plusMenuVisible) {
+                extendedMenu.style.display = 'none';
+                plusMenuVisible = false;
+            }
+        });
+        
+        // 处理相机按钮点击事件
+        const cameraBtn = document.querySelector('.camera-btn');
+        cameraBtn.addEventListener('click', function() {
+            // 如果设备支持媒体API，则尝试打开相机
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                alert('正在打开相机...');
+            } else {
+                alert('您的设备不支持相机功能');
+            }
+        });
+        
+        // 实现消息发送功能
+        function sendMessage() {
+            const inputArea = document.querySelector('.input-area');
+            const text = inputArea.value.trim();
+            if (!text) return;
+            
+            // 创建用户消息
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.innerHTML = `<div class="message-content">${text}</div>`;
+            
+            // 添加到消息列表
+            const chatMessages = document.querySelector('.chat-messages');
+            chatMessages.appendChild(userMsg);
+            
+            // 清空输入框
+            inputArea.value = '';
+            
+            // 滚动到底部
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // 模拟小舵回复
+            setTimeout(() => {
+                // 显示正在输入
+                const typingMsg = document.createElement('div');
+                typingMsg.className = 'message system typing';
+                typingMsg.innerHTML = `<div class="message-content">小舵正在思考...</div>`;
+                chatMessages.appendChild(typingMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // 模拟回复延迟
+                setTimeout(() => {
+                    // 移除"正在输入"提示
+                    chatMessages.removeChild(typingMsg);
+                    
+                    // 根据问题生成回复
+                    let reply = '';
+                    if (text.includes('公司') && text.includes('经营')) {
+                        reply = '根据最新数据分析，公司第三季度营收同比增长15%，但利润率略有下降。建议加强成本控制，优化产品结构，并关注教育信息化新政策带来的市场机会。';
+                    } else if (text.includes('竞争对手') || text.includes('市场')) {
+                        reply = '主要竞争对手新开普近期推出了新一代校园支付解决方案，已与20所高校达成合作。建议我们加快支付系统升级，同时差异化布局AI教学辅助功能，这是我们的潜在优势领域。';
+                    } else if (text.includes('团队') || text.includes('人员')) {
+                        reply = '技术团队人员流动率近期有所上升，主要原因是行业薪资水平提高。建议进行有针对性的薪酬调整，并加强团队凝聚力建设，可以考虑股权激励计划。';
+                    } else if (text.includes('财务') || text.includes('资金')) {
+                        reply = '本季度现金流状况良好，现金流入较上季度增长12%。但需要关注部分业务线成本结构偏高的问题，建议与财务团队共同制定成本优化方案，提高整体利润率。';
+                    } else if (text.includes('产品') || text.includes('研发')) {
+                        reply = '核心产品用户活跃度提升明显，但新功能的转化率略低于预期。建议加强用户研究，确保新功能开发更精准对接用户痛点，并优化产品迭代节奏，保证品质的同时加快上市速度。';
+                    } else {
+                        reply = '作为您的专属AI助手小舵，我可以帮您分析公司经营数据、市场竞争态势、团队管理问题，并提供决策建议。您也可以向我学习企业经营知识或请我进行市场调研。请问您需要了解哪方面的具体信息？';
+                    }
+                    
+                    // 添加回复消息
+                    const systemMsg = document.createElement('div');
+                    systemMsg.className = 'message system';
+                    systemMsg.innerHTML = `<div class="message-content">${reply}</div>`;
+                    chatMessages.appendChild(systemMsg);
+                    
+                    // 滚动到底部
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 1500);
+            }, 500);
+        }
+        
+        // 监听输入框回车事件
+        document.querySelector('.input-area').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        // 添加场景切换器功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const sceneSwitcher = document.querySelector('.scene-switcher');
+            let sceneDropdown;
+            
+            if (sceneSwitcher) {
+                sceneSwitcher.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    
+                    if (!sceneDropdown) {
+                        sceneDropdown = document.createElement('div');
+                        sceneDropdown.className = 'scene-dropdown';
+                        sceneDropdown.innerHTML = `
+                            <div class="scene-option active">通用场景</div>
+                            <div class="scene-option">任务决策</div>
+                            <div class="scene-option">经营决策</div>
+                            <div class="scene-option">战略决策</div>
+                        `;
+                        document.querySelector('.chat-input-container').appendChild(sceneDropdown);
+                        
+                        const sceneOptions = sceneDropdown.querySelectorAll('.scene-option');
+                        sceneOptions.forEach(option => {
+                            option.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                                
+                                sceneOptions.forEach(opt => opt.classList.remove('active'));
+                                this.classList.add('active');
+                                
+                                sceneSwitcher.querySelector('span').textContent = this.textContent;
+                                
+                                // 根据选择的场景跳转不同页面
+                                if (this.textContent === '任务决策') {
+                                    window.location.href = 'task_agent.html';
+                                } else if (this.textContent === '经营决策') {
+                                    window.location.href = 'fund_agent.html';
+                                } else if (this.textContent === '战略决策') {
+                                    window.location.href = 'strategy_agent.html';
+                                } else if (this.textContent === '通用场景') {
+                                    window.location.href = 'chat.html';
+                                }
+                                
+                                sceneDropdown.style.display = 'none';
+                            });
+                        });
+                    }
+                    
+                    if (sceneDropdown.style.display === 'block') {
+                        sceneDropdown.style.display = 'none';
+                    } else {
+                        sceneDropdown.style.display = 'block';
+                    }
+                });
+            }
+            
+            // 联网切换功能
+            const networkToggle = document.querySelector('.network-toggle');
+            if (networkToggle) {
+                networkToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    this.classList.toggle('active');
+                    if (this.classList.contains('active')) {
+                        this.querySelector('span').textContent = '联网';
+                        this.style.backgroundColor = '#e8f1ff';
+                        this.style.color = '#1a73e8';
+                    } else {
+                        this.querySelector('span').textContent = '不联网';
+                        this.style.backgroundColor = '#f5f7fa';
+                        this.style.color = '#666';
+                    }
+                });
+            }
+            
+            // 点击其他区域关闭下拉菜单
+            document.addEventListener('click', function(e) {
+                if (sceneDropdown && sceneDropdown.style.display === 'block' && 
+                    !sceneSwitcher.contains(e.target) && !sceneDropdown.contains(e.target)) {
+                    sceneDropdown.style.display = 'none';
+                }
+            });
+        });
+        
+        // 处理右上角更多按钮点击事件
+        const moreBtn = document.querySelector('.more-btn');
+        const moreMenu = document.querySelector('.more-menu');
+        const overlay = document.querySelector('.overlay');
+        let moreMenuVisible = false; // 改名以避免冲突
+        
+        moreBtn.addEventListener('click', function(e) {
+            e.stopPropagation(); // 阻止事件冒泡
+            if (moreMenuVisible) {
+                moreMenu.style.display = 'none';
+                overlay.style.display = 'none';
+            } else {
+                moreMenu.style.display = 'block';
+                overlay.style.display = 'block';
+            }
+            moreMenuVisible = !moreMenuVisible;
+        });
+        
+        // 点击遮罩层关闭菜单
+        overlay.addEventListener('click', function() {
+            moreMenu.style.display = 'none';
+            overlay.style.display = 'none';
+            moreMenuVisible = false;
+        });
+        
+        // 处理开启新会话按钮点击事件
+        const newChatBtn = document.querySelector('.new-chat-btn');
+        newChatBtn.addEventListener('click', function() {
+            // 清空聊天消息
+            const chatMessages = document.querySelector('.chat-messages');
+            chatMessages.innerHTML = `
+                <div class="message-day">今天</div>
+                <div class="message system">
+                    <div class="message-content">您好，我是您的专属AI助手小舵。我可以帮您查看公司经营数据、进行决策分析、市场调研、学习企业经营知识等。请问今天有什么可以帮到您？</div>
+                </div>
+            `;
+            
+            // 关闭菜单
+            moreMenu.style.display = 'none';
+            overlay.style.display = 'none';
+            moreMenuVisible = false;
+        });
+        
+        // 处理历史记录点击事件
+        const historyItems = document.querySelectorAll('.history-item');
+        historyItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const historyTitle = this.querySelector('.history-title').textContent;
+                
+                // 加载相应的历史聊天记录
+                const chatMessages = document.querySelector('.chat-messages');
+                
+                // 根据标题加载不同的历史记录
+                if (historyTitle.includes('营收')) {
+                    chatMessages.innerHTML = `
+                        <div class="message-day">今天</div>
+                        <div class="message user">
+                            <div class="message-content">我想了解Q3季度的营收预测情况</div>
+                        </div>
+                        <div class="message system">
+                            <div class="message-content">根据当前市场走势和前两个季度的表现，预计Q3季度营收将达到2.3亿元，同比增长约12%。不过需要关注两个重点客户的续约情况，如果顺利，增长率可能上升至15%。</div>
+                        </div>
+                        <div class="message user">
+                            <div class="message-content">这两个客户续约的把握有多大？</div>
+                        </div>
+                        <div class="message system">
+                            <div class="message-content">根据销售团队的最新反馈，A客户续约可能性约85%，已进入最终审批阶段；B客户约70%，对方正在评估我们的新方案，预计下周会有明确回复。建议您与销售副总裁刘总一起参与B客户的下一次会议，提升续约成功率。</div>
+                        </div>
+                    `;
+                } else if (historyTitle.includes('竞品')) {
+                    chatMessages.innerHTML = `
+                        <div class="message-day">今天</div>
+                        <div class="message user">
+                            <div class="message-content">最近新开普有什么动向？</div>
+                        </div>
+                        <div class="message system">
+                            <div class="message-content">新开普上周发布了新一代校园智慧支付解决方案，整合了校园卡、移动支付和身份认证功能。据了解，他们已与20所高校达成合作，估计年内将覆盖100万大学生用户。他们的方案在用户体验和支付场景整合方面有明显优势。</div>
+                        </div>
+                        <div class="message user">
+                            <div class="message-content">对我们有什么影响？</div>
+                        </div>
+                        <div class="message system">
+                            <div class="message-content">短期内可能影响我们在校园支付领域的10-15%市场份额。建议我们加快支付系统的升级迭代，同时差异化布局AI教学辅助功能，这是我们的潜在优势领域。下周我会提供一份详细的竞争分析报告，包括应对策略建议。</div>
+                        </div>
+                    `;
+                } else if (historyTitle.includes('薪资')) {
+                    chatMessages.innerHTML = `
+                        <div class="message-day">昨天</div>
+                        <div class="message user">
+                            <div class="message-content">技术团队最近流失率有点高，怎么看？</div>
+                        </div>
+                        <div class="message system">
+                            <div class="message-content">技术团队流失率确实高于往年同期，达到了12%（往年平均为7%）。主要原因是行业整体薪资水平上涨，而我们的调整相对滞后。核心技术人员（5年以上经验）的薪资比市场平均低约15%。</div>
+                        </div>
+                        <div class="message user">
+                            <div class="message-content">有什么建议？</div>
+                        </div>
+                        <div class="message system">
+                            <div class="message-content">建议进行有针对性的薪酬调整，特别是高价值技术岗位可提高10-15%。同时可考虑实施股权激励计划，绑定核心骨干的长期利益。此外，可加强团队凝聚力建设，包括技术创新奖励、定期技术分享等非物质激励措施。</div>
+                        </div>
+                    `;
+                } else if (historyTitle.includes('路线图')) {
+                    chatMessages.innerHTML = `
+                        <div class="message-day">昨天</div>
+                        <div class="message user">
+                            <div class="message-content">对下半年产品路线图有什么建议？</div>
+                        </div>
+                        <div class="message system">
+                            <div class="message-content">建议下半年重点关注三个方向：1）提升现有产品的支付系统，加入更多场景支持；2）开发基于GPT的智能教学辅助功能，提供个性化学习建议；3）加强数据分析平台建设，为学校提供更全面的管理决策支持。同时，提高迭代频率，从月度发布改为双周发布。</div>
+                        </div>
+                        <div class="message user">
+                            <div class="message-content">哪个方向最有竞争力？</div>
+                        </div>
+                        <div class="message system">
+                            <div class="message-content">基于大模型的智能教学辅助功能最具差异化优势和成长潜力。我们的数据积累和教育场景理解是显著竞争优势，而且根据市场调研，超过80%的学校有引入AI辅助教学的需求和预算。建议组建专门团队（约8-10人）进行快速开发和测试。</div>
+                        </div>
+                    `;
+                } else if (historyTitle.includes('AI')) {
+                    chatMessages.innerHTML = `
+                        <div class="message-day">6月15日</div>
+                        <div class="message user">
+                            <div class="message-content">AI教学辅助功能应该包含哪些核心能力？</div>
+                        </div>
+                        <div class="message system">
+                            <div class="message-content">AI教学辅助功能应包含以下核心能力：1）个性化学习路径规划；2）知识点掌握度分析与弱点识别；3）智能答疑与概念解析；4）学习行为分析与干预建议；5）内容智能推荐；6）教师教学效果分析。基于我们的教育数据积累，可针对不同学科特点定制算法模型。</div>
+                        </div>
+                        <div class="message user">
+                            <div class="message-content">开发周期大概需要多久？</div>
+                        </div>
+                        <div class="message system">
+                            <div class="message-content">根据功能复杂度和现有技术储备，预计完整开发周期为5-6个月。但建议采用MVP策略，先开发2-3个核心功能（如智能答疑和知识点弱点识别）快速上线获取反馈，这部分可在2个月内完成。初期可与3-5所重点合作院校进行小范围测试，收集用户反馈后再进行全功能开发。</div>
+                        </div>
+                    `;
+                }
+                
+                // 关闭菜单
+                moreMenu.style.display = 'none';
+                overlay.style.display = 'none';
+                moreMenuVisible = false;
+                
+                // 滚动到底部
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+        });
+    </script>
+</body>
+</html> 

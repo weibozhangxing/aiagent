@@ -1,0 +1,2030 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>智舵 - CEO专属AI助手</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://at.alicdn.com/t/c/font_4431638_cpv7nz8taf4.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts-wordcloud@2.1.0/dist/echarts-wordcloud.min.js"></script>
+    <style>
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-55-Regular/AlibabaPuHuiTi-3-55-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-65-Medium/AlibabaPuHuiTi-3-65-Medium.woff2') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-75-SemiBold/AlibabaPuHuiTi-3-75-SemiBold.woff2') format('woff2');
+            font-weight: 600;
+            font-style: normal;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'AlibabaPuHuiTi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background-color: #f8f9fc;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .ios-container {
+            width: 100%;
+            height: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+            background-color: #f8f9fc;
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        .status-bar {
+            height: 44px;
+            background-color: #f8f9fc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .status-bar .time {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .status-bar .icons {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-bar .icon {
+            margin-left: 6px;
+        }
+        
+        .header {
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #185ADB;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .welcome {
+            flex: 1;
+            padding-left: 15px;
+        }
+        
+        .welcome h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .welcome p {
+            font-size: 14px;
+            color: #666;
+            margin-top: 2px;
+        }
+        
+        .mode-switcher {
+            display: flex;
+            align-items: center;
+            background-color: #e4e9f1;
+            border-radius: 20px;
+            padding: 4px;
+            position: relative;
+        }
+        
+        .mode-option {
+            padding: 6px 12px;
+            font-size: 14px;
+            color: #666;
+            border-radius: 16px;
+            z-index: 1;
+            transition: color 0.3s;
+        }
+        
+        .mode-option.active {
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .mode-bg {
+            position: absolute;
+            left: 4px;
+            top: 4px;
+            width: calc(50% - 4px);
+            height: calc(100% - 8px);
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 0 20px;
+            height: calc(100% - 44px - 80px);
+            overflow-y: auto;
+            padding-bottom: 120px;
+        }
+        
+        .section {
+            margin-bottom: 24px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .section-action {
+            font-size: 14px;
+            color: #007AFF;
+        }
+        
+        .schedule-card {
+            background-color: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .schedule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .schedule-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .schedule-info p {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .schedule-time {
+            background-color: #f0f5ff;
+            color: #1a73e8;
+            font-size: 13px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        
+        .schedule-details {
+            display: flex;
+            align-items: center;
+            margin-top: 6px;
+        }
+        
+        .schedule-details i {
+            font-size: 16px;
+            color: #666;
+            margin-right: 6px;
+        }
+        
+        .schedule-details span {
+            font-size: 14px;
+            color: #666;
+            margin-right: 16px;
+        }
+        
+        .task-card {
+            background-color: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+        
+        .priority {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        
+        .priority.high {
+            background-color: #ffebee;
+            color: #e53935;
+        }
+        
+        .priority.medium {
+            background-color: #fff8e1;
+            color: #ffa000;
+        }
+        
+        .priority.low {
+            background-color: #e8f5e9;
+            color: #43a047;
+        }
+        
+        .task-header {
+            padding-right: 60px;
+        }
+        
+        .task-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .task-progress {
+            margin: 12px 0;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background-color: #eaecef;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #007AFF;
+            border-radius: 3px;
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .task-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+        }
+        
+        .task-owner {
+            display: flex;
+            align-items: center;
+        }
+        
+        .owner-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            margin-right: 8px;
+        }
+        
+        .owner-name {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .task-deadline {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .task-deadline i {
+            font-size: 14px;
+            margin-right: 4px;
+            vertical-align: -1px;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        
+        .tool-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: white;
+            border-radius: 16px;
+            padding: 16px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tool-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+        
+        .tool-icon i {
+            font-size: 24px;
+            color: white;
+        }
+        
+        .tool-name {
+            font-size: 12px;
+            color: #333;
+        }
+        
+        .tool-icon.blue {
+            background-color: #1a73e8;
+        }
+        
+        .tool-icon.orange {
+            background-color: #f5a623;
+        }
+        
+        .tool-icon.yellow {
+            background-color: #FFCA28;
+        }
+        
+        .tool-icon.green {
+            background-color: #34a853;
+        }
+        
+        .tool-icon.purple {
+            background-color: #9c27b0;
+        }
+        
+        .tool-icon.red {
+            background-color: #ea4335;
+        }
+        
+        .tool-icon.teal {
+            background-color: #00bcd4;
+        }
+        
+        .tool-icon.indigo {
+            background-color: #3f51b5;
+        }
+        
+        .tool-icon.pink {
+            background-color: #e91e63;
+        }
+        
+        .chat-section {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+            right: 0;
+            background-color: white;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+        }
+        
+        .function-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+        
+        .scene-switcher {
+            display: flex;
+            align-items: center;
+            background-color: #f5f7fa;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .network-toggle {
+            display: flex;
+            align-items: center;
+            background-color: #f0f5ff;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #1a73e8;
+            margin-left: 0;
+            margin-right: auto;
+        }
+        
+        .network-toggle i {
+            font-size: 18px;
+            margin-right: 4px;
+            color: #1a73e8;
+        }
+        
+        .scene-switcher i, .network-toggle i {
+            font-size: 16px;
+            margin-right: 4px;
+            color: #666;
+        }
+        
+        .scene-switcher .ri-arrow-down-s-line {
+            margin-left: 4px;
+            margin-right: 0;
+        }
+        
+        .scene-switcher:hover, .network-toggle:hover {
+            background-color: #e9ecf1;
+        }
+        
+        .network-toggle.active {
+            background-color: #e8f1ff;
+            color: #1a73e8;
+        }
+        
+        .network-toggle.active i {
+            color: #1a73e8;
+        }
+        
+        /* Scene dropdown menu */
+        .scene-dropdown {
+            position: absolute;
+            bottom: 65px;
+            left: 10px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 130px;
+            overflow: hidden;
+            z-index: 999;
+            display: none;
+        }
+        
+        .scene-option {
+            padding: 12px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .scene-option:hover, .scene-option.active {
+            background-color: #f5f7fa;
+        }
+        
+        .chat-input {
+            display: flex;
+            align-items: center;
+            background-color: #f5f7fa;
+            border-radius: 30px;
+            padding: 10px 16px;
+        }
+        
+        .input-area {
+            flex: 1;
+            font-size: 15px;
+            background: none;
+            border: none;
+            outline: none;
+            color: #333;
+            height: 24px;
+            margin: 0 8px;
+        }
+        
+        .input-tools {
+            display: flex;
+            align-items: center;
+        }
+        
+        .tool-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 4px;
+            cursor: pointer;
+        }
+        
+        .tool-btn i {
+            font-size: 20px;
+            color: #666;
+        }
+        
+        .plus-btn i {
+            font-size: 22px;
+            color: #1a73e8;
+        }
+        
+        /* 扩展菜单样式 */
+        .extended-menu {
+            display: flex;
+            justify-content: space-around;
+            padding: 16px 0 8px 0;
+            background-color: #f5f7fa;
+            border-radius: 16px;
+            margin-top: 12px;
+        }
+        
+        .extended-menu-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 70px;
+        }
+        
+        .menu-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .menu-icon i {
+            font-size: 24px;
+            color: #1a73e8;
+        }
+        
+        .menu-text {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* 底部导航栏 */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            max-width: 430px;
+            right: 0;
+            margin: 0 auto;
+            background-color: white;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            padding-bottom: 30px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            border-top: 1px solid #f0f0f0;
+            z-index: 10;
+            display: none; /* 默认隐藏，因为我们使用智舵聊天界面代替 */
+        }
+        
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .tab-icon {
+            font-size: 22px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .tab-item.active .tab-icon {
+            color: #1a73e8;
+        }
+        
+        .tab-label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .tab-item.active .tab-label {
+            color: #1a73e8;
+            font-weight: 500;
+        }
+        
+        .fund-overview {
+            margin-bottom: 16px;
+        }
+        
+        .fund-metrics {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .fund-metric {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .unit {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .fund-chart-container {
+            height: 180px;
+            width: 100%;
+        }
+        
+        .fund-analysis {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            align-items: flex-start;
+            border-left: 4px solid #1a73e8;
+        }
+        
+        .analysis-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 16px;
+            background-color: #e8f0fe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .analysis-icon i {
+            font-size: 18px;
+            color: #1a73e8;
+        }
+        
+        .analysis-content {
+            flex: 1;
+        }
+        
+        .analysis-content p {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+            margin: 0;
+        }
+        
+        .brief-card {
+            background-color: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .brief-tabs {
+            display: flex;
+            border-bottom: 1px solid #eeeeee;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+        }
+        
+        .brief-tab {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+            padding: 6px 12px;
+            border-radius: 16px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .brief-tab i {
+            font-size: 16px;
+            margin-right: 4px;
+        }
+        
+        .brief-tab.active {
+            background-color: #e8f0fe;
+            color: #1a73e8;
+            font-weight: 500;
+        }
+        
+        .brief-content {
+            margin-bottom: 16px;
+        }
+        
+        .brief-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #f2f2f7;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .brief-item:hover {
+            background-color: #f5f7fa;
+        }
+        
+        .brief-item-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+        
+        .brief-item-source {
+            font-size: 12px;
+            color: #8e8e93;
+            margin-bottom: 6px;
+        }
+        
+        .brief-item-desc {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .brief-analysis {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 14px;
+            position: relative;
+        }
+        
+        .brief-analysis::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #1a73e8;
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+        
+        .analysis-header {
+            display: flex;
+            align-items: center;
+            color: #1a73e8;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .analysis-header i {
+            margin-right: 6px;
+            font-size: 16px;
+        }
+        
+        .analysis-content p {
+            font-size: 13px;
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+        
+        .analysis-list {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        
+        .analysis-list li {
+            font-size: 13px;
+            color: #333;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+        
+        .analysis-warning {
+            display: flex;
+            align-items: flex-start;
+            background-color: #fff3e0;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 12px;
+        }
+        
+        .analysis-warning i {
+            color: #f57c00;
+            margin-right: 6px;
+            font-size: 16px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .warning-content {
+            flex: 1;
+        }
+        
+        .warning-title {
+            font-weight: 600;
+            color: #f57c00;
+            font-size: 12px;
+            margin-right: 4px;
+        }
+        
+        .warning-text {
+            color: #555;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        
+        .camera-btn {
+            margin-right: 4px;
+        }
+        
+        .camera-btn i {
+            color: #666;
+            font-size: 20px;
+        }
+        
+        /* 快捷功能入口样式 */
+        .shortcuts-container {
+            width: 100%;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        
+        .shortcuts-scroll {
+            display: flex;
+            overflow-x: auto;
+            padding: 5px 0;
+            -webkit-overflow-scrolling: touch; /* 提供更流畅的滚动效果 */
+            scrollbar-width: none; /* Firefox隐藏滚动条 */
+            -ms-overflow-style: none; /* IE/Edge隐藏滚动条 */
+        }
+        
+        .shortcuts-scroll::-webkit-scrollbar {
+            display: none; /* Chrome/Safari/Opera隐藏滚动条 */
+        }
+        
+        .shortcut-item {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: #f5f7fa;
+            border-radius: 18px;
+            margin-right: 10px;
+            font-size: 14px;
+            color: #333;
+            white-space: nowrap;
+        }
+        
+        .shortcut-item i {
+            font-size: 16px;
+            margin-right: 6px;
+            color: #1a73e8;
+        }
+        
+        /* CEO状态信息卡片样式 - 更紧凑简洁的版本 */
+        .ceo-status-card {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 24px;
+            padding: 12px 16px;
+            position: relative;
+            width: 100%;
+        }
+        
+        .ceo-status-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #4facfe, #ff9a9e, #43e97b);
+            border-radius: 4px 0 0 4px;
+        }
+        
+        .status-items {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .status-divider {
+            width: 1px;
+            height: 36px;
+            background-color: #f0f0f0;
+            margin: 0 10px;
+        }
+        
+        .status-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            margin-right: 10px;
+        }
+        
+        .status-icon i {
+            font-size: 18px;
+            color: white;
+        }
+        
+        .status-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .status-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+        
+        .status-value .unit {
+            font-size: 11px;
+            font-weight: 500;
+            margin-left: 1px;
+        }
+        
+        .status-label {
+            font-size: 11px;
+            color: #8a8a8a;
+        }
+    </style>
+</head>
+<body>
+    <div class="ios-container">
+        <div class="status-bar">
+            <div class="time">9:41</div>
+            <div class="icons">
+                <div class="icon">
+                    <i class="ri-signal-wifi-fill"></i>
+                </div>
+                <div class="icon">
+                    <i class="ri-battery-fill"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header">
+            <div class="avatar" style="background: linear-gradient(135deg, #3a7bd5, #00d2ff); font-size: 18px; box-shadow: 0 4px 10px rgba(58, 123, 213, 0.3);">小舵</div>
+            <div class="welcome">
+                <h2>早上好，骞总</h2>
+                <p>2025-03-16 | 晴朗 22°C 微风</p>
+            </div>
+        </div>
+        
+        <div class="content">
+            <!-- 直接显示CEO状态卡片，不包含标题行 -->
+            <div class="ceo-status-card">
+                <div class="status-items">
+                    <div class="status-item">
+                        <div class="status-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+                            <i class="ri-emotion-happy-line"></i>
+                        </div>
+                        <div class="status-info">
+                            <div class="status-value">平静</div>
+                            <div class="status-label">情绪状态</div>
+                        </div>
+                    </div>
+                    <div class="status-divider"></div>
+                    <div class="status-item">
+                        <div class="status-icon" style="background: linear-gradient(135deg, #ff9a9e, #fad0c4);">
+                            <i class="ri-heart-pulse-line"></i>
+                        </div>
+                        <div class="status-info">
+                            <div class="status-value">65<span class="unit">%</span></div>
+                            <div class="status-label">压力值</div>
+                        </div>
+                    </div>
+                    <div class="status-divider"></div>
+                    <div class="status-item">
+                        <div class="status-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+                            <i class="ri-footprint-line"></i>
+                        </div>
+                        <div class="status-info">
+                            <div class="status-value">3,245</div>
+                            <div class="status-label">运动步数</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 1. 资金日报模块 -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">资金日报（2025-03-16）</h2>
+                    <a href="fund_detail.html" class="section-action">查看详情</a>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="fund-overview">
+                        <div class="fund-metrics">
+                            <div class="fund-metric">
+                                <div class="metric-value" style="color: #34a853;">18<span class="unit">万元</span></div>
+                                <div class="metric-label">资金流入</div>
+                            </div>
+                            <div class="fund-metric">
+                                <div class="metric-value" style="color: #ea4335;">41<span class="unit">万元</span></div>
+                                <div class="metric-label">资金流出</div>
+                            </div>
+                            <div class="fund-metric">
+                                <div class="metric-value" style="color: #4285f4;">99<span class="unit">万元</span></div>
+                                <div class="metric-label">现金余额</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="fund-analysis">
+                        <div class="analysis-icon">
+                            <i class="ri-funds-line"></i>
+                        </div>
+                        <div class="analysis-content">
+                            <p>收入与支出余额差距较大，需关注资金流动性和支出控制，避免短期资金压力。建议优化收入来源和支出结构，确保资金安全。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 2. 智汇资讯模块 -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">智汇资讯</h2>
+                    <a href="zixun.html" class="section-action">查看详情</a>
+                </div>
+                
+                <div class="brief-card">
+                    <div class="brief-content">
+                        <div class="brief-item" onclick="window.location.href='zixun.html'">
+                            <div class="brief-item-title">教育部发布《2025年全国教育信息化发展规划》</div>
+                            <div class="brief-item-source">来源：教育部官网 · 今日 09:30</div>
+                            <div class="brief-item-desc" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">规划提出到2025年，要基本实现"三全两高一大"的发展目标，即教学应用覆盖全体教师、学习应用覆盖全体适龄学生、数字校园建设覆盖全体学校，推动形成"宽带网络优质，数字资源丰富，平台服务强大"的发展格局。</div>
+                        </div>
+                        
+                        <div class="brief-item" onclick="window.location.href='zixun.html'">
+                            <div class="brief-item-title">新开普推出新一代校园智慧支付解决方案</div>
+                            <div class="brief-item-source">来源：新开普官方公众号 · 今日 10:15</div>
+                            <div class="brief-item-desc" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">新方案整合校园卡、移动支付、身份认证等功能，打造一体化校园生活服务平台。已与20所高校达成合作意向，预计年内覆盖100万大学生。</div>
+                        </div>
+                        
+                        <div class="brief-item" onclick="window.location.href='zixun.html'">
+                            <div class="brief-item-title">OpenAI发布GPT-5，理解能力大幅提升</div>
+                            <div class="brief-item-source">来源：TechCrunch · 今日 08:45</div>
+                            <div class="brief-item-desc" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">GPT-5相比前代模型，在多轮对话、逻辑推理和专业知识等方面能力显著提升，在教育场景测试中表现出更强的个性化教学能力，可精准识别学生知识盲点并提供定制化学习建议。</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 3. 任务管理模块 -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">任务管理</h2>
+                    <a href="task.html" class="section-action">查看详情</a>
+                </div>
+                
+                <!-- 任务追踪汇总模块 -->
+                <div style="background:white; border-radius:16px; padding:20px; margin-bottom:20px; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+                    <!-- 图表滑动模块 -->
+                    <div style="margin-bottom:20px; position:relative;">
+                        <div id="chartContainer" style="overflow-x:hidden; width:100%; position:relative;">
+                            <div id="chartSlider" style="display:flex; transition:transform 0.3s ease; width:400%;">
+                                <!-- 图表1: 任务状态分布饼图 -->
+                                <div class="chart-slide" style="width:25%; flex-shrink:0;">
+                                    <div onclick="window.location.href='task.html'" style="height:180px; cursor:pointer;" id="statusChart"></div>
+                                    <div style="text-align:center; font-size:14px; color:#333; font-weight:600; margin-top:10px;">任务状态分布</div>
+                                </div>
+                                <!-- 图表2: 任务阶段分布 -->
+                                <div class="chart-slide" style="width:25%; flex-shrink:0;">
+                                    <div onclick="window.location.href='task.html'" style="height:180px; cursor:pointer;" id="stageChart"></div>
+                                    <div style="text-align:center; font-size:14px; color:#333; font-weight:600; margin-top:10px;">任务阶段分布</div>
+                                </div>
+                                <!-- 图表3: 红灯任务标签分布 -->
+                                <div class="chart-slide" style="width:25%; flex-shrink:0;">
+                                    <div onclick="window.location.href='task.html'" style="height:180px; cursor:pointer;" id="redFlagChart"></div>
+                                    <div style="text-align:center; font-size:14px; color:#333; font-weight:600; margin-top:10px;">红灯任务标签分布</div>
+                                </div>
+                                <!-- 图表4: 张力原因归一化汇总 -->
+                                <div class="chart-slide" style="width:25%; flex-shrink:0;">
+                                    <div onclick="window.location.href='task.html'" style="height:180px; cursor:pointer;" id="tensionChart"></div>
+                                    <div style="text-align:center; font-size:14px; color:#333; font-weight:600; margin-top:10px;">任务张力原因分布</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 分页指示器 -->
+                        <div style="display:flex; justify-content:center; margin-top:10px;">
+                            <div class="chart-dot active" data-index="0" style="width:6px; height:6px; border-radius:50%; background-color:#ccc; margin:0 4px; cursor:pointer;"></div>
+                            <div class="chart-dot" data-index="1" style="width:6px; height:6px; border-radius:50%; background-color:#ccc; margin:0 4px; cursor:pointer;"></div>
+                            <div class="chart-dot" data-index="2" style="width:6px; height:6px; border-radius:50%; background-color:#ccc; margin:0 4px; cursor:pointer;"></div>
+                            <div class="chart-dot" data-index="3" style="width:6px; height:6px; border-radius:50%; background-color:#ccc; margin:0 4px; cursor:pointer;"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 高风险任务和有进展任务卡片 -->
+                    <div style="display:flex; justify-content:space-between; gap:8px;">
+                        <!-- 高风险任务卡片 -->
+                        <a href="task.html" style="text-decoration:none; flex:1;">
+                            <div style="background:#fff8f8; border-radius:10px; padding:10px 12px; border-left:4px solid #e53935; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                                <div style="display:flex; align-items:center; justify-content:space-between;">
+                                    <div style="display:flex; align-items:center;">
+                                        <i class="ri-alert-line" style="font-size:18px; color:#e53935; margin-right:8px;"></i>
+                                        <div style="font-size:14px; font-weight:600; color:#333; white-space:nowrap;">高风险任务 (5)</div>
+                                    </div>
+                                    <div style="color:#999; font-size:14px;">></div>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- 有进展任务卡片 -->
+                        <a href="task.html" style="text-decoration:none; flex:1;">
+                            <div style="background:#f0f7ff; border-radius:10px; padding:10px 12px; border-left:4px solid #1a73e8; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                                <div style="display:flex; align-items:center; justify-content:space-between;">
+                                    <div style="display:flex; align-items:center;">
+                                        <i class="ri-refresh-line" style="font-size:18px; color:#1a73e8; margin-right:8px;"></i>
+                                        <div style="font-size:14px; font-weight:600; color:#333; white-space:nowrap;">有进展任务 (12)</div>
+                                    </div>
+                                    <div style="color:#999; font-size:14px;">></div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 快捷工具模块 -->
+            <div class="section">
+                <!-- 决策类工具 -->
+                <div style="margin-bottom: 16px;">
+                    <div style="font-size: 15px; font-weight: 500; color: #555; margin-bottom: 12px; padding-left: 4px;">智能体</div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                        <!-- 战略决策 -->
+                        <div class="tool-item" onclick="window.location.href='strategy_agent.html'">
+                            <div class="tool-icon teal">
+                                <i class="ri-compass-3-line"></i>
+                            </div>
+                            <div class="tool-name">战略决策</div>
+                        </div>
+                        <!-- 经营决策 -->
+                        <div class="tool-item" onclick="window.location.href='fund_agent.html'">
+                            <div class="tool-icon blue">
+                                <i class="ri-bar-chart-2-line"></i>
+                            </div>
+                            <div class="tool-name">经营决策</div>
+                        </div>
+                        <!-- 任务决策 -->
+                        <div class="tool-item" onclick="window.location.href='task_agent.html'">
+                            <div class="tool-icon purple">
+                                <i class="ri-task-line"></i>
+                            </div>
+                            <div class="tool-name">任务决策</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 数据类工具 -->
+                <div>
+                    <div style="font-size: 15px; font-weight: 500; color: #555; margin-bottom: 12px; padding-left: 4px;">常用工具</div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                        <!-- 资金日报 -->
+                        <div class="tool-item" onclick="window.location.href='fund_detail.html'">
+                            <div class="tool-icon blue">
+                                <i class="ri-money-cny-circle-line"></i>
+                            </div>
+                            <div class="tool-name">资金日报</div>
+                        </div>
+                        <!-- 公司周报 -->
+                        <div class="tool-item" onclick="showToast('功能产品设计中～')">
+                            <div class="tool-icon orange">
+                                <i class="ri-file-chart-line"></i>
+                            </div>
+                            <div class="tool-name">公司周报</div>
+                        </div>
+                        <!-- 公司月报 -->
+                        <div class="tool-item" onclick="window.location.href='yuebao.html'">
+                            <div class="tool-icon yellow">
+                                <i class="ri-bar-chart-box-line"></i>
+                            </div>
+                            <div class="tool-name">公司月报</div>
+                        </div>
+                        <!-- 战略季报 -->
+                        <div class="tool-item" onclick="window.location.href='jibao.html'">
+                            <div class="tool-icon green">
+                                <i class="ri-line-chart-line"></i>
+                            </div>
+                            <div class="tool-name">战略季报</div>
+                        </div>
+                        <!-- 战略年报 -->
+                        <div class="tool-item" onclick="window.location.href='nianbao.html'">
+                            <div class="tool-icon red">
+                                <i class="ri-trophy-line"></i>
+                            </div>
+                            <div class="tool-name">战略年报</div>
+                        </div>
+                        <!-- 智汇资讯 -->
+                        <div class="tool-item" onclick="window.location.href='zixun.html'">
+                            <div class="tool-icon purple">
+                                <i class="ri-newspaper-line"></i>
+                            </div>
+                            <div class="tool-name">智汇资讯</div>
+                        </div>
+                        <!-- 每日总结 -->
+                        <div class="tool-item" onclick="window.location.href='qa.html'">
+                            <div class="tool-icon indigo">
+                                <i class="ri-file-list-3-line"></i>
+                            </div>
+                            <div class="tool-name">每日总结</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-section">
+            <div class="function-bar">
+                <div class="scene-switcher">
+                    <i class="iconfont icon-quanjing"></i>
+                    <span>通用场景</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="network-toggle active">
+                    <i class="ri-global-line"></i>
+                    <span>联网</span>
+                </div>
+            </div>
+            <div class="chat-input">
+                <div class="tool-btn camera-btn">
+                    <i class="ri-camera-line"></i>
+                </div>
+                <input type="text" class="input-area" placeholder="有什么可以帮您分析或决策的？">
+                <div class="input-tools">
+                    <div class="tool-btn">
+                        <i class="ri-mic-line"></i>
+                    </div>
+                    <div class="tool-btn plus-btn">
+                        <i class="ri-add-line"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 添加扩展菜单，默认隐藏 -->
+            <div class="extended-menu" style="display: none;">
+                <div class="extended-menu-item">
+                    <div class="menu-icon">
+                        <i class="ri-camera-line"></i>
+                    </div>
+                    <div class="menu-text">拍照</div>
+                </div>
+                <div class="extended-menu-item">
+                    <div class="menu-icon">
+                        <i class="ri-image-line"></i>
+                    </div>
+                    <div class="menu-text">上传照片</div>
+                </div>
+                <div class="extended-menu-item">
+                    <div class="menu-icon">
+                        <i class="ri-file-line"></i>
+                    </div>
+                    <div class="menu-text">上传文件</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部Tab导航，这里默认隐藏使用智舵助手代替 -->
+        <div class="tab-bar">
+            <div class="tab-item active">
+                <i class="ri-home-5-fill tab-icon"></i>
+                <span class="tab-label">首页</span>
+            </div>
+            <div class="tab-item">
+                <i class="ri-calendar-line tab-icon"></i>
+                <span class="tab-label">日程</span>
+            </div>
+            <div class="tab-item">
+                <i class="ri-task-line tab-icon"></i>
+                <span class="tab-label">任务</span>
+            </div>
+            <div class="tab-item">
+                <i class="ri-user-line tab-icon"></i>
+                <span class="tab-label">我的</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 模式切换逻辑
+        const modeSwitcher = document.querySelector('.mode-switcher');
+        const modeOptions = document.querySelectorAll('.mode-option');
+        const modeBg = document.querySelector('.mode-bg');
+        
+        modeOptions.forEach((option, index) => {
+            option.addEventListener('click', () => {
+                modeOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                
+                if (index === 0) {
+                    modeBg.style.transform = 'translateX(0)';
+                } else {
+                    modeBg.style.transform = 'translateX(100%)';
+                    window.location.href = 'home_personal.html';
+                }
+            });
+        });
+        
+        // 聊天页面相关代码
+        const chatInput = document.querySelector('.chat-input');
+        const inputArea = document.querySelector('.input-area');
+        const chatSection = document.querySelector('.chat-section');
+        let isExpanded = false;
+        
+        // 创建聊天页面元素
+        const chatPage = document.createElement('div');
+        chatPage.className = 'chat-page';
+        chatPage.innerHTML = `
+            <div class="chat-header">
+                <div class="back-btn">
+                    <i class="ri-arrow-left-line"></i>
+                </div>
+                <div class="chat-title">小舵</div>
+                <div class="more-btn">
+                    <i class="ri-more-2-fill"></i>
+                </div>
+            </div>
+            <div class="chat-messages">
+                <div class="message-day">今天</div>
+                <div class="message system">
+                    <div class="message-content">欢迎使用智舵，您的专属AI助手。有什么可以帮到您？</div>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <!-- 这里将插入从主页复制的输入框 -->
+            </div>
+        `;
+        
+        // 添加CSS样式
+        const style = document.createElement('style');
+        style.textContent = `
+            .chat-page {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: #f8f9fc;
+                z-index: 1000;
+                display: flex;
+                flex-direction: column;
+                transform: translateY(100%);
+                transition: transform 0.3s ease-out;
+                max-width: 430px;
+                margin: 0 auto;
+                right: 0;
+            }
+            
+            .chat-page.active {
+                transform: translateY(0);
+            }
+            
+            .chat-header {
+                height: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 16px;
+                background-color: #ffffff;
+                border-bottom: 1px solid #f0f0f0;
+                position: relative;
+            }
+            
+            .chat-title {
+                font-size: 18px;
+                font-weight: 600;
+                color: #333;
+            }
+            
+            .back-btn, .more-btn {
+                width: 36px;
+                height: 36px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+            
+            .back-btn i, .more-btn i {
+                font-size: 24px;
+                color: #666;
+            }
+            
+            .chat-messages {
+                flex: 1;
+                overflow-y: auto;
+                padding: 16px;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .message-day {
+                text-align: center;
+                font-size: 12px;
+                color: #999;
+                margin: 8px 0 16px;
+                position: relative;
+            }
+            
+            .message-day:before, .message-day:after {
+                content: "";
+                height: 1px;
+                background-color: #f0f0f0;
+                flex: 1;
+                position: absolute;
+                top: 50%;
+                width: 30%;
+            }
+            
+            .message-day:before {
+                left: 0;
+            }
+            
+            .message-day:after {
+                right: 0;
+            }
+            
+            .message {
+                max-width: 80%;
+                margin-bottom: 16px;
+                position: relative;
+                align-self: flex-start;
+            }
+            
+            .message.system {
+                align-self: flex-start;
+            }
+            
+            .message.user {
+                align-self: flex-end;
+            }
+            
+            .message-content {
+                padding: 12px 16px;
+                border-radius: 16px;
+                font-size: 15px;
+                line-height: 1.5;
+                position: relative;
+            }
+            
+            .system .message-content {
+                background-color: #ffffff;
+                color: #333;
+                border-top-left-radius: 4px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            }
+            
+            .user .message-content {
+                background-color: #1a73e8;
+                color: white;
+                border-top-right-radius: 4px;
+                box-shadow: 0 2px 8px rgba(26, 115, 232, 0.1);
+            }
+            
+            .chat-input-container {
+                padding: 10px 16px 30px;
+                background-color: #ffffff;
+                border-top: 1px solid #f0f0f0;
+            }
+            
+            /* 适配底部安全区域 */
+            @supports (padding-bottom: env(safe-area-inset-bottom)) {
+                .chat-input-container {
+                    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+                }
+            }
+        `;
+        
+        document.head.appendChild(style);
+        document.body.appendChild(chatPage);
+        
+        // 复制输入框组件到聊天页面
+        const chatInputContainer = chatPage.querySelector('.chat-input-container');
+        chatInputContainer.appendChild(chatSection.cloneNode(true));
+        
+        // 更新聊天页面中的输入元素引用
+        const chatPageInput = chatPage.querySelector('.input-area');
+        const chatPagePlusBtn = chatPage.querySelector('.plus-btn');
+        const chatPageExtendedMenu = chatPage.querySelector('.extended-menu');
+        const chatPageShortcuts = chatPage.querySelector('.shortcuts-container');
+        
+        // 处理输入框点击事件 - 显示聊天页面
+        inputArea.addEventListener('click', function() {
+            // 点击输入框时跳转到聊天页面
+            window.location.href = 'chat.html';
+        });
+        
+        // 点击返回按钮关闭聊天页面
+        const backBtn = chatPage.querySelector('.back-btn');
+        backBtn.addEventListener('click', function() {
+            chatPage.classList.remove('active');
+        });
+        
+        // 在聊天页面中重新绑定"+"按钮事件
+        let chatPageMenuVisible = false;
+        chatPagePlusBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (chatPageMenuVisible) {
+                chatPageExtendedMenu.style.display = 'none';
+            } else {
+                chatPageExtendedMenu.style.display = 'flex';
+            }
+            chatPageMenuVisible = !chatPageMenuVisible;
+        });
+        
+        // 实现消息发送功能
+        function sendMessage() {
+            const text = chatPageInput.value.trim();
+            if (!text) return;
+            
+            // 创建用户消息
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.innerHTML = `<div class="message-content">${text}</div>`;
+            
+            // 添加到消息列表
+            const chatMessages = chatPage.querySelector('.chat-messages');
+            chatMessages.appendChild(userMsg);
+            
+            // 清空输入框
+            chatPageInput.value = '';
+            
+            // 滚动到底部
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // 模拟小舵回复
+            setTimeout(() => {
+                // 显示正在输入
+                const typingMsg = document.createElement('div');
+                typingMsg.className = 'message system typing';
+                typingMsg.innerHTML = `<div class="message-content">小舵正在思考...</div>`;
+                chatMessages.appendChild(typingMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // 模拟回复延迟
+                setTimeout(() => {
+                    // 移除"正在输入"提示
+                    chatMessages.removeChild(typingMsg);
+                    
+                    // 根据问题生成回复
+                    let reply = '';
+                    if (text.includes('公司') && text.includes('经营')) {
+                        reply = '根据最新数据分析，公司第三季度营收同比增长15%，但利润率略有下降。建议加强成本控制，优化产品结构，并关注教育信息化新政策带来的市场机会。';
+                    } else if (text.includes('竞争对手') || text.includes('市场')) {
+                        reply = '主要竞争对手新开普近期推出了新一代校园支付解决方案，已与20所高校达成合作。建议我们加快支付系统升级，同时差异化布局AI教学辅助功能，这是我们的潜在优势领域。';
+                    } else if (text.includes('团队') || text.includes('人员')) {
+                        reply = '技术团队人员流动率近期有所上升，主要原因是行业薪资水平提高。建议进行有针对性的薪酬调整，并加强团队凝聚力建设，可以考虑股权激励计划。';
+                    } else {
+                        reply = '作为您的专属AI助手，我可以帮您分析公司经营数据、市场竞争态势、团队管理问题，并提供决策建议。请问您需要了解哪方面的具体信息？';
+                    }
+                    
+                    // 添加回复消息
+                    const systemMsg = document.createElement('div');
+                    systemMsg.className = 'message system';
+                    systemMsg.innerHTML = `<div class="message-content">${reply}</div>`;
+                    chatMessages.appendChild(systemMsg);
+                    
+                    // 滚动到底部
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 1500);
+            }, 500);
+        }
+        
+        // 监听输入框回车事件
+        chatPageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        // 为了确保不会影响到某些特定的快捷项，可以保留特定功能
+        document.querySelectorAll('.shortcuts-scroll .shortcut-item').forEach(item => {
+            const itemText = item.querySelector('span')?.textContent.trim();
+            if (itemText === '日程管理') {
+                item.addEventListener('click', function() {
+                    window.location.href = 'schedule_detail.html';
+                });
+            } else if (itemText === '每日总结') {
+                item.addEventListener('click', function() {
+                    window.location.href = 'qa.html';
+                });
+            } else {
+                // 移除所有其他快捷项的点击事件和样式
+                item.style.cursor = 'default';
+                item.onclick = null;
+            }
+        });
+        
+        // 处理相机按钮点击事件
+        const chatPageCameraBtn = chatPage.querySelector('.camera-btn');
+        chatPageCameraBtn.addEventListener('click', () => {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                alert('正在打开相机...');
+            } else {
+                alert('您的设备不支持相机功能');
+            }
+        });
+        
+        // 点击其他区域关闭扩展菜单
+        document.addEventListener('click', (e) => {
+            if (!chatPagePlusBtn.contains(e.target) && !chatPageExtendedMenu.contains(e.target) && chatPageMenuVisible) {
+                chatPageExtendedMenu.style.display = 'none';
+                chatPageMenuVisible = false;
+            }
+        });
+        
+        // 添加功能设计中提示函数
+        function showFeatureInDevelopment(featureName) {
+            alert(featureName + "功能设计中，后续补充");
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 移除快捷栏中所有项目的点击效果
+            document.querySelectorAll('.shortcuts-scroll .shortcut-item').forEach(item => {
+                item.style.cursor = 'default';
+                item.onclick = null;
+            });
+            
+            // 特别确保"每日总结"项没有点击效果
+            document.querySelectorAll('.shortcuts-scroll .shortcut-item').forEach(item => {
+                if (item.querySelector('span') && item.querySelector('span').textContent === '每日总结') {
+                    item.style.cursor = 'default';
+                    item.onclick = null;
+                    item.style.pointerEvents = 'none'; // 额外确保没有点击效果
+                }
+            });
+            
+            // 初始化图表
+            initCharts();
+            
+            // 设置图表点击事件
+            const chartDots = document.querySelectorAll('.chart-dot');
+            const chartSlider = document.getElementById('chartSlider');
+            
+            chartDots.forEach(dot => {
+                dot.addEventListener('click', function() {
+                    const index = this.getAttribute('data-index');
+                    chartSlider.style.transform = `translateX(-${index * 25}%)`;
+                    
+                    // 更新活动点
+                    chartDots.forEach(d => d.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // 为活动点添加样式
+            const activeDot = document.querySelector('.chart-dot.active');
+            if (activeDot) {
+                activeDot.style.backgroundColor = '#1a73e8';
+                activeDot.style.width = '8px';
+                activeDot.style.height = '8px';
+            }
+            
+            // 修复场景切换器功能
+            const sceneSwitcher = document.querySelector('.scene-switcher');
+            let sceneDropdown;
+            
+            if (sceneSwitcher) {
+                sceneSwitcher.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    
+                    if (!sceneDropdown) {
+                        sceneDropdown = document.createElement('div');
+                        sceneDropdown.className = 'scene-dropdown';
+                        sceneDropdown.innerHTML = `
+                            <div class="scene-option active">通用场景</div>
+                            <div class="scene-option">任务决策</div>
+                            <div class="scene-option">经营决策</div>
+                            <div class="scene-option">战略决策</div>
+                        `;
+                        document.querySelector('.chat-section').appendChild(sceneDropdown);
+                        
+                        const sceneOptions = sceneDropdown.querySelectorAll('.scene-option');
+                        sceneOptions.forEach(option => {
+                            option.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                                
+                                sceneOptions.forEach(opt => opt.classList.remove('active'));
+                                this.classList.add('active');
+                                
+                                sceneSwitcher.querySelector('span').textContent = this.textContent;
+                                
+                                // 根据选择的场景跳转不同页面
+                                if (this.textContent === '任务决策') {
+                                    window.location.href = 'task_agent.html';
+                                } else if (this.textContent === '经营决策') {
+                                    window.location.href = 'fund_agent.html';
+                                } else if (this.textContent === '战略决策') {
+                                    window.location.href = 'strategy_agent.html';
+                                } else if (this.textContent === '通用场景') {
+                                    window.location.href = 'chat.html';
+                                }
+                                
+                                sceneDropdown.style.display = 'none';
+                            });
+                        });
+                    }
+                    
+                    if (sceneDropdown.style.display === 'block') {
+                        sceneDropdown.style.display = 'none';
+                    } else {
+                        sceneDropdown.style.display = 'block';
+                    }
+                });
+            }
+            
+            // 修复联网切换功能
+            const networkToggle = document.querySelector('.network-toggle');
+            if (networkToggle) {
+                networkToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    this.classList.toggle('active');
+                    if (this.classList.contains('active')) {
+                        this.querySelector('span').textContent = '联网';
+                        this.style.backgroundColor = '#e8f1ff';
+                        this.style.color = '#1a73e8';
+                    } else {
+                        this.querySelector('span').textContent = '不联网';
+                        this.style.backgroundColor = '#f5f7fa';
+                        this.style.color = '#666';
+                    }
+                });
+            }
+            
+            // 点击其他区域关闭下拉菜单
+            document.addEventListener('click', function(e) {
+                if (sceneDropdown && sceneDropdown.style.display === 'block' && 
+                    !sceneSwitcher.contains(e.target) && !sceneDropdown.contains(e.target)) {
+                    sceneDropdown.style.display = 'none';
+                }
+            });
+        });
+
+        // 初始化所有图表
+        function initCharts() {
+            // 图表1: 任务状态分布饼图
+            const statusChart = echarts.init(document.getElementById('statusChart'));
+            statusChart.setOption({
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{b}: {c} ({d}%)'
+                },
+                color: ['#e53935', '#ffa000', '#43a047'],
+                series: [{
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        show: true,
+                        formatter: '{b}: {c}'
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    },
+                    data: [
+                        {value: 5, name: '红灯'},
+                        {value: 8, name: '黄灯'},
+                        {value: 47, name: '绿灯'}
+                    ]
+                }]
+            });
+            
+            // 图表2: 任务阶段分布
+            const stageChart = echarts.init(document.getElementById('stageChart'));
+            stageChart.setOption({
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{b}: {c} ({d}%)'
+                },
+                series: [{
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        show: true,
+                        formatter: '{b}: {c}'
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    },
+                    data: [
+                        {value: 12, name: '关口一'},
+                        {value: 18, name: '关口二'},
+                        {value: 15, name: '关口三'},
+                        {value: 15, name: '关口四'}
+                    ]
+                }]
+            });
+            
+            // 图表3: 红灯任务标签分布
+            const redFlagChart = echarts.init(document.getElementById('redFlagChart'));
+            redFlagChart.setOption({
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{b}: {c}'
+                },
+                series: [{
+                    type: 'pie',
+                    radius: '70%',
+                    center: ['50%', '50%'],
+                    data: [
+                        {value: 2, name: '资源紧张'},
+                        {value: 3, name: '进度延迟'},
+                        {value: 1, name: '技术瓶颈'},
+                        {value: 2, name: '合同风险'},
+                        {value: 2, name: '沟通障碍'}
+                    ],
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }]
+            });
+            
+            // 图表4: 张力原因归一化汇总（词云样式）
+            const tensionChart = echarts.init(document.getElementById('tensionChart'));
+            tensionChart.setOption({
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{b}: {c}'
+                },
+                series: [{
+                    type: 'wordCloud',
+                    shape: 'rect',
+                    drawOutOfBound: false,
+                    sizeRange: [12, 30],
+                    rotationRange: [-30, 30],
+                    textStyle: {
+                        fontWeight: 'bold',
+                        color: function() {
+                            return 'rgb(' + 
+                                Math.round(Math.random() * 155 + 100) + ',' + 
+                                Math.round(Math.random() * 155 + 100) + ',' + 
+                                Math.round(Math.random() * 155 + 100) + ')';
+                        }
+                    },
+                    emphasis: {
+                        textStyle: {
+                            shadowBlur: 10,
+                            shadowColor: '#333'
+                        }
+                    },
+                    data: [
+                        {name: '资源不足', value: 18},
+                        {name: '进度滞后', value: 22},
+                        {name: '需求变更', value: 15},
+                        {name: '技术复杂', value: 12},
+                        {name: '风险控制', value: 10},
+                        {name: '沟通问题', value: 8},
+                        {name: '团队协作', value: 14},
+                        {name: '供应链', value: 7},
+                        {name: '人员变动', value: 9},
+                        {name: '预算超支', value: 11},
+                        {name: '决策延迟', value: 6},
+                        {name: '质量问题', value: 13}
+                    ]
+                }]
+            });
+            
+            // 窗口调整大小时重绘图表
+            window.addEventListener('resize', function() {
+                statusChart.resize();
+                stageChart.resize();
+                redFlagChart.resize();
+                tensionChart.resize();
+            });
+        }
+
+        // 添加任务展开/收起功能
+        document.getElementById('toggleButton').addEventListener('click', function() {
+            const extraTasks = document.getElementById('extraTasks');
+            const toggleText = document.getElementById('toggleText');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (extraTasks.style.display === 'none') {
+                extraTasks.style.display = 'flex';
+                toggleText.textContent = '收起';
+                toggleIcon.className = 'ri-arrow-up-s-line';
+            } else {
+                extraTasks.style.display = 'none';
+                toggleText.textContent = '查看更多';
+                toggleIcon.className = 'ri-arrow-down-s-line';
+            }
+        });
+
+        // 修改Toast提示函数，让提示显示在页面中间
+        function showToast(message) {
+            // 检查是否已存在toast元素，如果有则移除
+            const existingToast = document.getElementById('customToast');
+            if (existingToast) {
+                document.body.removeChild(existingToast);
+            }
+            
+            // 创建新的toast元素
+            const toast = document.createElement('div');
+            toast.id = 'customToast';
+            toast.style.position = 'fixed';
+            toast.style.top = '50%';  // 改为居中显示
+            toast.style.left = '50%';
+            toast.style.transform = 'translate(-50%, -50%)';  // 水平和垂直都居中
+            toast.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+            toast.style.color = 'white';
+            toast.style.padding = '10px 20px';
+            toast.style.borderRadius = '20px';
+            toast.style.fontSize = '14px';
+            toast.style.zIndex = '9999';
+            toast.style.maxWidth = '90%';
+            toast.style.textAlign = 'center';
+            toast.innerText = message;
+            
+            // 添加到页面
+            document.body.appendChild(toast);
+            
+            // 2秒后自动消失
+            setTimeout(() => {
+                if (toast && document.body.contains(toast)) {
+                    document.body.removeChild(toast);
+                }
+            }, 2000);
+        }
+    </script>
+</body>
+</html> 

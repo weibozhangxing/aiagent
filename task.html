@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>全部任务 - 智舵CEO助手</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://at.alicdn.com/t/c/font_4431638_cpv7nz8taf4.css" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-55-Regular/AlibabaPuHuiTi-3-55-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-65-Medium/AlibabaPuHuiTi-3-65-Medium.woff2') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-75-SemiBold/AlibabaPuHuiTi-3-75-SemiBold.woff2') format('woff2');
+            font-weight: 600;
+            font-style: normal;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'AlibabaPuHuiTi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background-color: #f8f9fc;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .ios-container {
+            width: 100%;
+            height: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+            background-color: #f8f9fc;
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        .status-bar {
+            height: 44px;
+            background-color: #f8f9fc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .status-bar .time {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .status-bar .icons {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-bar .icon {
+            margin-left: 6px;
+        }
+        
+        .nav-header {
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        
+        .back-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #007AFF;
+            font-size: 24px;
+            text-decoration: none;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+            margin-left: -8px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .back-btn:active {
+            background-color: rgba(0, 122, 255, 0.1);
+        }
+        
+        .back-btn i {
+            font-size: 28px;
+            pointer-events: none;
+        }
+        
+        .page-title {
+            flex: 1;
+            text-align: center;
+            font-size: 17px;
+            font-weight: 600;
+            color: #000;
+            margin-left: -36px;
+            position: relative;
+            z-index: 5;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 10px 20px;
+            padding-bottom: 80px;
+            height: calc(100% - 44px - 80px);
+            overflow-y: auto;
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: #f0f2f5;
+            border-radius: 10px;
+            padding: 8px 15px;
+            margin-bottom: 12px;
+        }
+        
+        .search-bar i {
+            font-size: 18px;
+            color: #999;
+            margin-right: 10px;
+        }
+        
+        .search-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .filter-tabs {
+            display: flex;
+            margin-bottom: 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .filter-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .filter-tab {
+            padding: 8px 16px;
+            font-size: 14px;
+            color: #666;
+            background-color: #f0f2f5;
+            border-radius: 18px;
+            margin-right: 10px;
+            white-space: nowrap;
+        }
+        
+        .filter-tab.active {
+            background-color: #1a73e8;
+            color: white;
+        }
+        
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .task-list a {
+            padding: 10px;
+        }
+        
+        .chat-section {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+            right: 0;
+            background-color: white;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+            padding: 12px 20px;
+        }
+        
+        .chat-input {
+            display: flex;
+            align-items: center;
+            background-color: #f5f7fa;
+            border-radius: 30px;
+            padding: 10px 16px;
+        }
+        
+        .input-area {
+            flex: 1;
+            font-size: 15px;
+            background: none;
+            border: none;
+            outline: none;
+            color: #333;
+            height: 24px;
+            margin: 0 8px;
+        }
+        
+        .input-tools {
+            display: flex;
+            align-items: center;
+        }
+        
+        .tool-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 4px;
+            cursor: pointer;
+        }
+        
+        .tool-btn i {
+            font-size: 20px;
+            color: #666;
+        }
+        
+        .plus-btn i {
+            font-size: 22px;
+            color: #1a73e8;
+        }
+        
+        .shortcuts-container {
+            display: none;
+        }
+        
+        .camera-btn {
+            margin-right: 4px;
+        }
+        
+        .camera-btn i {
+            color: #666;
+            font-size: 20px;
+        }
+        
+        /* 新增样式 - 从task_agent.html复制 */
+        .chat-input-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+            right: 0;
+            padding: 10px 16px 30px;
+            background-color: #ffffff;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .function-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+        
+        .scene-switcher {
+            display: flex;
+            align-items: center;
+            background-color: #f5f7fa;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .network-toggle {
+            display: flex;
+            align-items: center;
+            background-color: #f0f5ff;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #1a73e8;
+            margin-left: 0;
+            margin-right: auto;
+        }
+        
+        .network-toggle i {
+            font-size: 18px;
+            margin-right: 4px;
+            color: #1a73e8;
+        }
+        
+        .scene-switcher i, .network-toggle i {
+            font-size: 16px;
+            margin-right: 4px;
+            color: #666;
+        }
+        
+        .scene-switcher .ri-arrow-down-s-line {
+            margin-left: 4px;
+            margin-right: 0;
+        }
+        
+        .scene-switcher:hover, .network-toggle:hover {
+            background-color: #e9ecf1;
+        }
+        
+        .network-toggle.active {
+            background-color: #e8f1ff;
+            color: #1a73e8;
+        }
+        
+        .network-toggle.active i {
+            color: #1a73e8;
+        }
+        
+        /* 扩展菜单样式 */
+        .extended-menu {
+            display: none;
+            justify-content: space-around;
+            padding: 16px 0 8px 0;
+            background-color: #f5f7fa;
+            border-radius: 16px;
+            margin-top: 12px;
+        }
+        
+        .extended-menu-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 70px;
+        }
+        
+        .menu-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .menu-icon i {
+            font-size: 24px;
+            color: #1a73e8;
+        }
+        
+        .menu-text {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* 适配底部安全区域 */
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            .chat-input-container {
+                padding-bottom: calc(10px + env(safe-area-inset-bottom));
+            }
+        }
+        
+        /* AI analysis card */
+        div[style*="background:#f0f7ff"] {
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        
+        /* Task status filter */
+        div[style*="display:flex; align-items:center; margin-bottom:16px"] {
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="ios-container">
+        <div class="status-bar">
+            <div class="time">9:41</div>
+            <div class="icons">
+                <div class="icon">
+                    <i class="ri-signal-wifi-fill"></i>
+                </div>
+                <div class="icon">
+                    <i class="ri-battery-fill"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="nav-header">
+            <a href="home.html" class="back-btn">
+                <i class="ri-arrow-left-s-line"></i>
+            </a>
+            <div class="page-title">全部任务</div>
+        </div>
+        
+        <div class="content">
+            <!-- 添加AI分析结果卡片 -->
+            <div style="background:#f0f7ff; border-radius:16px; padding:16px; margin-bottom:20px; border-left:3px solid #1a73e8;">
+                <div style="display:flex; align-items:flex-start;">
+                    <i class="ri-radar-line" style="font-size:18px; color:#1a73e8; margin-right:12px; margin-top:2px;"></i>
+                    <div>
+                        <div style="font-size:14px; color:#333; line-height:1.5;">目前您关注<span style="font-weight:600; color:#1a73e8;">60</span>个任务，AI已分析所有任务的优先级、截止日期、资源需求、张力与风险因素，发现<span style="font-weight:600; color:#e53935;">5</span>项需重点关注的高风险任务，同时有<span style="font-weight:600; color:#1a73e8;">12</span>项任务有更新变动。</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 任务状态筛选器 -->
+            <div style="display:flex; align-items:center; margin-bottom:16px; gap:12px;">
+                <div style="flex:1; position:relative; min-width:75px;">
+                    <select id="statusFilter" class="filter-dropdown" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid #eee; background-color:#f5f5f5; font-size:13px; color:#333; appearance:none; padding-right:30px;">
+                        <option value="all">状态</option>
+                        <option value="red">红灯</option>
+                        <option value="yellow">黄灯</option>
+                        <option value="green">绿灯</option>
+                    </select>
+                    <i class="ri-arrow-down-s-line" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); pointer-events:none; color:#666;"></i>
+                </div>
+                
+                <div style="flex:1; position:relative; min-width:75px;">
+                    <select id="departmentFilter" class="filter-dropdown" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid #eee; background-color:#f5f5f5; font-size:13px; color:#333; appearance:none; padding-right:30px;">
+                        <option value="all">部门</option>
+                        <option value="huake-cloud">华科电子BG-云业务部</option>
+                        <option value="huake-robot">华科电子BG-机器人生态产品部</option>
+                    </select>
+                    <i class="ri-arrow-down-s-line" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); pointer-events:none; color:#666;"></i>
+                </div>
+                
+                <div style="flex:1; position:relative; min-width:75px;">
+                    <select id="personFilter" class="filter-dropdown" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid #eee; background-color:#f5f5f5; font-size:13px; color:#333; appearance:none; padding-right:30px;">
+                        <option value="all">责任人</option>
+                        <option value="yinhang">尹航</option>
+                        <option value="renyuan">任元</option>
+                    </select>
+                    <i class="ri-arrow-down-s-line" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); pointer-events:none; color:#666;"></i>
+                </div>
+                
+                <div style="flex:1; position:relative; min-width:75px;">
+                    <select id="typeFilter" class="filter-dropdown" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid #eee; background-color:#f5f5f5; font-size:13px; color:#333; appearance:none; padding-right:30px;">
+                        <option value="all">类型</option>
+                        <option value="lianzw">联执委项目</option>
+                        <option value="feilianzw">非联执委项目</option>
+                    </select>
+                    <i class="ri-arrow-down-s-line" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); pointer-events:none; color:#666;"></i>
+                </div>
+            </div>
+
+            <div class="search-bar">
+                <i class="ri-search-line"></i>
+                <input type="text" class="search-input" placeholder="搜索任务...">
+            </div>
+            
+            <div class="filter-tabs">
+                <div class="filter-tab active">全部任务</div>
+                <div class="filter-tab">高风险</div>
+                <div class="filter-tab">有进展</div>
+                <div class="filter-tab">进度延迟</div>
+                <div class="filter-tab">已完成</div>
+            </div>
+            
+            <div class="task-list">
+                <!-- 任务1：机器人生态商业计划书 -->
+                <a href="task_detail.html" style="display:flex; flex-direction:column; padding:12px; background:white; border-radius:8px; text-decoration:none; border-left:3px solid #ffa000; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <div style="font-size:14px; color:#333; font-weight:500;">机器人生态商业计划书</div>
+                        <div style="display:flex; align-items:center;">
+                            <span style="font-size:12px; color:#ffa000; margin-right:4px;">进度延迟</span>
+                            <i class="ri-arrow-right-s-line" style="font-size:16px; color:#999;"></i>
+                        </div>
+                    </div>
+                    <div style="font-size:12px; color:#666; line-height:1.4;">距离董事会审议截止日期仅剩4天，当前完成度不足70%，AI预测完成概率仅35%，建议立即协调额外资源支持。</div>
+                </a>
+                
+                <!-- 任务2：一季度决算工作 -->
+                <a href="task_detail.html" style="display:flex; flex-direction:column; padding:12px; background:white; border-radius:8px; text-decoration:none; border-left:3px solid #e53935; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <div style="font-size:14px; color:#333; font-weight:500;">一季度决算工作</div>
+                        <div style="display:flex; align-items:center;">
+                            <span style="font-size:12px; color:#e53935; margin-right:4px;">高风险</span>
+                            <i class="ri-arrow-right-s-line" style="font-size:16px; color:#999;"></i>
+                        </div>
+                    </div>
+                    <div style="font-size:12px; color:#666; line-height:1.4;">AI检测到财务团队工作负载过高，技术部门数据提交延期，系统预测若不干预将影响决算报告时效性。</div>
+                </a>
+                
+                <!-- 任务3：新一代智能显示解决方案 -->
+                <a href="task_detail.html" style="display:flex; flex-direction:column; padding:12px; background:white; border-radius:8px; text-decoration:none; border-left:3px solid #e53935; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <div style="font-size:14px; color:#333; font-weight:500;">新一代智能显示解决方案</div>
+                        <div style="display:flex; align-items:center;">
+                            <span style="font-size:12px; color:#e53935; margin-right:4px;">高风险</span>
+                            <i class="ri-arrow-right-s-line" style="font-size:16px; color:#999;"></i>
+                        </div>
+                    </div>
+                    <div style="font-size:12px; color:#666; line-height:1.4;">综合分析7个关联因素后，AI确认核心供应商交付风险增加89%，需在72小时内做出战略调整决策。</div>
+                </a>
+                
+                <!-- 任务4：年度战略合作伙伴谈判 -->
+                <a href="task_detail.html" style="display:flex; flex-direction:column; padding:12px; background:white; border-radius:8px; text-decoration:none; border-left:3px solid #e53935; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <div style="font-size:14px; color:#333; font-weight:500;">年度战略合作伙伴谈判</div>
+                        <div style="display:flex; align-items:center;">
+                            <span style="font-size:12px; color:#e53935; margin-right:4px;">高风险</span>
+                            <i class="ri-arrow-right-s-line" style="font-size:16px; color:#999;"></i>
+                        </div>
+                    </div>
+                    <div style="font-size:12px; color:#666; line-height:1.4;">AI对比分析历史协议发现3处潜在法律风险点，智能合约模型预测可能导致权益损失，需法务紧急介入。</div>
+                </a>
+                
+                <!-- 任务5：智慧校园平台升级 -->
+                <a href="task_detail.html" style="display:flex; flex-direction:column; padding:12px; background:white; border-radius:8px; text-decoration:none; border-left:3px solid #ffa000; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <div style="font-size:14px; color:#333; font-weight:500;">智慧校园平台升级</div>
+                        <div style="display:flex; align-items:center;">
+                            <span style="font-size:12px; color:#ffa000; margin-right:4px;">进度延迟</span>
+                            <i class="ri-arrow-right-s-line" style="font-size:16px; color:#999;"></i>
+                        </div>
+                    </div>
+                    <div style="font-size:12px; color:#666; line-height:1.4;">智能项目监控检测到开发速度下降42%，分析显示客户需求持续变更是主因，AI建议立即召开需求冻结会议。</div>
+                </a>
+                
+                <!-- 任务6：产品研发实验室升级 -->
+                <a href="task_detail.html" style="display:flex; flex-direction:column; padding:12px; background:white; border-radius:8px; text-decoration:none; border-left:3px solid #1a73e8; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <div style="font-size:14px; color:#333; font-weight:500;">产品研发实验室升级</div>
+                        <div style="display:flex; align-items:center;">
+                            <span style="font-size:12px; color:#1a73e8; margin-right:4px;">有进展</span>
+                            <i class="ri-arrow-right-s-line" style="font-size:16px; color:#999;"></i>
+                        </div>
+                    </div>
+                    <div style="font-size:12px; color:#666; line-height:1.4;">设备采购完成度已达95%，工程团队提前3天完成安装调试，AI预测可提前5天交付使用，建议安排验收流程。</div>
+                </a>
+                
+                <!-- 任务7：特惠商城1.0 -->
+                <a href="task_detail.html" style="display:flex; flex-direction:column; padding:12px; background:white; border-radius:8px; text-decoration:none; border-left:3px solid #1a73e8; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <div style="font-size:14px; color:#333; font-weight:500;">特惠商城1.0</div>
+                        <div style="display:flex; align-items:center;">
+                            <span style="font-size:12px; color:#1a73e8; margin-right:4px;">有进展</span>
+                            <i class="ri-arrow-right-s-line" style="font-size:16px; color:#999;"></i>
+                        </div>
+                    </div>
+                    <div style="font-size:12px; color:#666; line-height:1.4;">项目所有里程碑均按计划完成，测试环节未发现重大问题，上线申请已获得初步批准，预计可提前上线。</div>
+                </a>
+                
+                <!-- 任务8：国际业务部季度数据分析 -->
+                <a href="task_detail.html" style="display:flex; flex-direction:column; padding:12px; background:white; border-radius:8px; text-decoration:none; border-left:3px solid #ffa000; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <div style="font-size:14px; color:#333; font-weight:500;">国际业务部季度数据分析</div>
+                        <div style="display:flex; align-items:center;">
+                            <span style="font-size:12px; color:#ffa000; margin-right:4px;">进度延迟</span>
+                            <i class="ri-arrow-right-s-line" style="font-size:16px; color:#999;"></i>
+                        </div>
+                    </div>
+                    <div style="font-size:12px; color:#666; line-height:1.4;">欧洲区域市场数据收集不完整，AI检测到关键指标缺失率达35%，影响整体市场分析准确性，建议联系当地团队补充。</div>
+                </a>
+                
+                <!-- 任务9：智能客服系统优化 -->
+                <a href="task_detail.html" style="display:flex; flex-direction:column; padding:12px; background:white; border-radius:8px; text-decoration:none; border-left:3px solid #4CAF50; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <div style="font-size:14px; color:#333; font-weight:500;">智能客服系统优化</div>
+                        <div style="display:flex; align-items:center;">
+                            <span style="font-size:12px; color:#4CAF50; margin-right:4px;">已完成</span>
+                            <i class="ri-arrow-right-s-line" style="font-size:16px; color:#999;"></i>
+                        </div>
+                    </div>
+                    <div style="font-size:12px; color:#666; line-height:1.4;">客服系统升级后满意度提升18%，AI自动回复准确率达92%，人工介入率下降31%，已达到项目预期目标，建议制定下阶段优化计划。</div>
+                </a>
+                
+                <!-- 任务10：年度员工满意度调研 -->
+                <a href="task_detail.html" style="display:flex; flex-direction:column; padding:12px; background:white; border-radius:8px; text-decoration:none; border-left:3px solid #ffa000; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <div style="font-size:14px; color:#333; font-weight:500;">年度员工满意度调研</div>
+                        <div style="display:flex; align-items:center;">
+                            <span style="font-size:12px; color:#ffa000; margin-right:4px;">进度延迟</span>
+                            <i class="ri-arrow-right-s-line" style="font-size:16px; color:#999;"></i>
+                        </div>
+                    </div>
+                    <div style="font-size:12px; color:#666; line-height:1.4;">调研问卷参与率仅为65%，低于预期目标的85%，技术部门参与率最低(42%)，影响数据代表性，建议延长问卷填写期限。</div>
+                </a>
+                
+                <!-- 任务11：新一代AI教学助手研发 -->
+                <a href="task_detail.html" style="display:flex; flex-direction:column; padding:12px; background:white; border-radius:8px; text-decoration:none; border-left:3px solid #e53935; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <div style="font-size:14px; color:#333; font-weight:500;">新一代AI教学助手研发</div>
+                        <div style="display:flex; align-items:center;">
+                            <span style="font-size:12px; color:#e53935; margin-right:4px;">高风险</span>
+                            <i class="ri-arrow-right-s-line" style="font-size:16px; color:#999;"></i>
+                        </div>
+                    </div>
+                    <div style="font-size:12px; color:#666; line-height:1.4;">核心算法模块遇到性能瓶颈，准确率提升受阻，AI评估显示当前方案难以满足项目KPI，建议引入外部专家顾问或考虑技术路线调整。</div>
+                </a>
+                
+                <!-- 任务12：海外市场拓展计划 -->
+                <a href="task_detail.html" style="display:flex; flex-direction:column; padding:12px; background:white; border-radius:8px; text-decoration:none; border-left:3px solid #1a73e8; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <div style="font-size:14px; color:#333; font-weight:500;">海外市场拓展计划</div>
+                        <div style="display:flex; align-items:center;">
+                            <span style="font-size:12px; color:#1a73e8; margin-right:4px;">有进展</span>
+                            <i class="ri-arrow-right-s-line" style="font-size:16px; color:#999;"></i>
+                        </div>
+                    </div>
+                    <div style="font-size:12px; color:#666; line-height:1.4;">东南亚市场调研已完成，初步规划制定中，潜在合作伙伴筛选名单已确定，下一步将安排实地考察访问，预计4月底前完成第一阶段评估。</div>
+                </a>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <div class="function-bar">
+                <div class="scene-switcher">
+                    <i class="iconfont icon-quanjing"></i>
+                    <span>任务决策</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="network-toggle active">
+                    <i class="ri-global-line"></i>
+                    <span>联网</span>
+                </div>
+            </div>
+            <div class="chat-input">
+                <div class="tool-btn camera-btn">
+                    <i class="ri-camera-line"></i>
+                </div>
+                <input type="text" class="input-area" placeholder="请输入您要了解或下发的任务～" autofocus>
+                <div class="input-tools">
+                    <div class="tool-btn">
+                        <i class="ri-mic-line"></i>
+                    </div>
+                    <div class="tool-btn plus-btn">
+                        <i class="ri-add-line"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 添加扩展菜单，默认隐藏 -->
+            <div class="extended-menu">
+                <div class="extended-menu-item">
+                    <div class="menu-icon">
+                        <i class="ri-camera-line"></i>
+                    </div>
+                    <div class="menu-text">拍照</div>
+                </div>
+                <div class="extended-menu-item">
+                    <div class="menu-icon">
+                        <i class="ri-image-line"></i>
+                    </div>
+                    <div class="menu-text">上传照片</div>
+                </div>
+                <div class="extended-menu-item">
+                    <div class="menu-icon">
+                        <i class="ri-file-line"></i>
+                    </div>
+                    <div class="menu-text">上传文件</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add toast notification component -->
+    <div id="toast" style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background-color:rgba(0,0,0,0.7); color:white; padding:12px 20px; border-radius:24px; font-size:14px; z-index:1000; opacity:0; transition:opacity 0.3s; pointer-events:none; max-width:90%; text-align:center;">
+        请点击机器人生态商业计划书任务进入详情页
+    </div>
+
+    <script>
+        // 任务筛选逻辑
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                filterTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                // 这里可以添加实际筛选逻辑
+            });
+        });
+        
+        // 搜索功能
+        const searchInput = document.querySelector('.search-input');
+        
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const taskItems = document.querySelectorAll('.task-list a');
+            
+            taskItems.forEach(item => {
+                const taskTitle = item.querySelector('div:first-child div:first-child').textContent.toLowerCase();
+                const taskDesc = item.querySelector('div:nth-child(2)').textContent.toLowerCase();
+                
+                if (taskTitle.includes(searchTerm) || taskDesc.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+        
+        // 输入框点击事件 - 修改为跳转到task_agent.html
+        document.querySelector('.input-area').addEventListener('click', function() {
+            window.location.href = 'task_agent.html';
+        });
+
+        // Camera button click event
+        document.querySelector('.camera-btn').addEventListener('click', function() {
+            window.location.href = 'task_agent.html';
+        });
+
+        // Mic button click event
+        document.querySelector('.tool-btn i.ri-mic-line').parentNode.addEventListener('click', function() {
+            window.location.href = 'task_agent.html';
+        });
+
+        // Plus button click event
+        document.querySelector('.plus-btn').addEventListener('click', function() {
+            window.location.href = 'task_agent.html';
+        });
+
+        // Scene switcher click event
+        document.querySelector('.scene-switcher').addEventListener('click', function() {
+            window.location.href = 'task_agent.html';
+        });
+
+        // Network toggle click event  
+        document.querySelector('.network-toggle').addEventListener('click', function() {
+            window.location.href = 'task_agent.html';
+        });
+
+        // Extended menu items click event
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.extended-menu-item')) {
+                window.location.href = 'task_agent.html';
+            }
+        });
+
+        // 添加筛选选项点击事件
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterOptions = document.querySelectorAll('.filter-option');
+            
+            filterOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const type = this.getAttribute('data-type');
+                    const value = this.getAttribute('data-value');
+                    
+                    // 切换选中状态
+                    this.classList.toggle('active');
+                    
+                    // 添加选中样式
+                    if (this.classList.contains('active')) {
+                        this.style.backgroundColor = '#e8f0fe';
+                        this.style.color = '#1a73e8';
+                    } else {
+                        this.style.backgroundColor = '#f5f5f5';
+                        this.style.color = '#333';
+                    }
+                    
+                    // 这里可以添加实际筛选逻辑
+                    console.log(`Filtering by ${type}: ${value}`);
+                });
+            });
+        });
+
+        // Add toast functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const taskItems = document.querySelectorAll('.task-list a');
+            
+            // Skip the first task (机器人生态商业计划书) and modify others
+            for (let i = 1; i < taskItems.length; i++) {
+                taskItems[i].addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showToast();
+                });
+                // Remove href to prevent default link behavior
+                taskItems[i].setAttribute('href', 'javascript:void(0)');
+            }
+            
+            function showToast() {
+                const toast = document.getElementById('toast');
+                toast.style.opacity = '1';
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>年度报告 - CEO专属AI助手</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://at.alicdn.com/t/c/font_4431638_cpv7nz8taf4.css" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-55-Regular/AlibabaPuHuiTi-3-55-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-65-Medium/AlibabaPuHuiTi-3-65-Medium.woff2') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-75-SemiBold/AlibabaPuHuiTi-3-75-SemiBold.woff2') format('woff2');
+            font-weight: 600;
+            font-style: normal;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'AlibabaPuHuiTi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background-color: #f5f5f7;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .ios-container {
+            width: 100%;
+            height: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+            background-color: #f5f5f7;
+            border-radius: 50px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        }
+        
+        .status-bar {
+            height: 44px;
+            background-color: #f5f5f7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 16px;
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .status-bar .time {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .status-bar .icons {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-bar .icon {
+            margin-left: 8px;
+        }
+        
+        .header {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 10;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .back-btn {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+            text-decoration: none;
+        }
+        
+        .back-btn:active {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .back-btn i {
+            font-size: 24px;
+            color: #007AFF;
+        }
+        
+        .page-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #000;
+            flex: 1;
+            text-align: center;
+            margin-right: 48px;
+        }
+        
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 20px;
+            height: calc(100% - 44px);
+        }
+        
+        /* 隐藏滚动条但保持功能 */
+        .content::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .content {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .year-section {
+            margin: 24px 0 16px;
+        }
+        
+        .year-label {
+            width: 100%;
+            font-size: 24px;
+            color: #1d1d1f;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .year-subtitle {
+            font-size: 14px;
+            color: #6e6e73;
+            font-weight: 400;
+        }
+        
+        .report-card {
+            background-color: white;
+            border-radius: 28px;
+            margin-bottom: 28px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            transform: translateZ(0);
+            display: block;
+            position: relative;
+        }
+        
+        .report-card:active {
+            transform: scale(0.97) translateZ(0);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .report-cover {
+            height: 200px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 28px;
+            color: white;
+            background-image: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+            overflow: hidden;
+        }
+        
+        .report-cover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://source.unsplash.com/random/800x600/?strategy,corporate,analysis');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.12;
+            z-index: 0;
+        }
+        
+        .report-year-display {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .report-subtitle {
+            font-size: 16px;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+            font-weight: 500;
+        }
+        
+        .report-watermark {
+            position: absolute;
+            right: 24px;
+            bottom: 20px;
+            font-size: 80px;
+            font-weight: 700;
+            opacity: 0.12;
+            letter-spacing: -2px;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .report-summary {
+            padding: 20px 28px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            position: relative;
+        }
+        
+        .report-summary-title {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #8e8e93;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .report-summary-title i {
+            font-size: 16px;
+            margin-right: 8px;
+            color: #007AFF;
+        }
+        
+        .report-summary-content {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #1d1d1f;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .report-strategic-analysis {
+            padding: 20px 28px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            position: relative;
+        }
+        
+        .report-strategic-title {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #8e8e93;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .report-strategic-title i {
+            font-size: 16px;
+            margin-right: 8px;
+            color: #FF6B35;
+        }
+        
+        .strategic-item {
+            margin-bottom: 14px;
+            position: relative;
+            padding-left: 28px;
+        }
+        
+        .strategic-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .strategic-icon {
+            position: absolute;
+            left: 0;
+            top: 3px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .strategic-icon.industry {
+            background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+        }
+        
+        .strategic-icon.competition {
+            background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+        }
+        
+        .strategic-icon.market {
+            background: linear-gradient(135deg, #34C759 0%, #32D74B 100%);
+        }
+        
+        .strategic-icon.customer {
+            background: linear-gradient(135deg, #AF52DE 0%, #FF2D55 100%);
+        }
+        
+        .strategic-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #1d1d1f;
+        }
+        
+        .strategic-highlight {
+            font-weight: 600;
+            color: #000;
+        }
+        
+        .report-info {
+            padding: 20px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .report-date {
+            font-size: 15px;
+            color: #6e6e73;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        
+        .report-date i {
+            font-size: 18px;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+        
+        .report-btn {
+            display: flex;
+            align-items: center;
+            color: #007AFF;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 10px 18px;
+            background-color: rgba(0, 122, 255, 0.1);
+            border-radius: 20px;
+            transition: all 0.2s ease;
+        }
+        
+        .report-btn:active {
+            background-color: rgba(0, 122, 255, 0.2);
+            transform: scale(0.95);
+        }
+        
+        .report-btn i {
+            margin-left: 8px;
+            font-size: 20px;
+        }
+        
+        /* 年度专属渐变色 - 更加庄重和战略性 */
+        .report-card:nth-child(2) .report-cover {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+        
+        .report-card:nth-child(3) .report-cover {
+            background: linear-gradient(135deg, #134e5e 0%, #71b280 100%);
+        }
+        
+        .report-card:nth-child(4) .report-cover {
+            background: linear-gradient(135deg, #8360c3 0%, #2ebf91 100%);
+        }
+        
+        .report-card:nth-child(5) .report-cover {
+            background: linear-gradient(135deg, #dd5e89 0%, #f7bb97 100%);
+        }
+        
+        /* 加载更多区域 */
+        .load-more {
+            text-align: center;
+            padding: 24px 0 36px;
+            color: #6e6e73;
+            font-size: 15px;
+            font-weight: 500;
+            opacity: 0.8;
+            letter-spacing: 0.5px;
+        }
+        
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+            text-align: center;
+            color: #8e8e93;
+        }
+        
+        .empty-state i {
+            font-size: 60px;
+            color: #c7c7cc;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state p {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        /* 下拉刷新指示器 */
+        .pull-indicator {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: -70px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: top 0.3s ease;
+            z-index: 5;
+        }
+        
+        .pull-indicator i {
+            font-size: 20px;
+            color: #007AFF;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .report-card {
+            animation: fadeInUp 0.4s ease forwards;
+            opacity: 0;
+        }
+        
+        .report-card:nth-child(2) { animation-delay: 0.1s; }
+        .report-card:nth-child(3) { animation-delay: 0.2s; }
+        .report-card:nth-child(4) { animation-delay: 0.3s; }
+        
+        /* 徽章效果 */
+        .report-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #007AFF;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .report-badge.latest {
+            background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+            color: white;
+        }
+        
+        /* 提示框样式 */
+        .toast-message {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            max-width: 90%;
+            text-align: center;
+            pointer-events: none;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .toast-message.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="ios-container">
+        <div class="status-bar">
+            <div class="time">9:41</div>
+            <div class="icons">
+                <div class="icon">
+                    <i class="ri-signal-wifi-fill"></i>
+                </div>
+                <div class="icon">
+                    <i class="ri-battery-fill"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header">
+            <a href="home.html" class="back-btn">
+                <i class="ri-arrow-left-s-line"></i>
+            </a>
+            <div class="page-title">年度报告</div>
+        </div>
+        
+        <div class="content">
+            <div class="pull-indicator">
+                <i class="ri-arrow-down-line"></i>
+            </div>
+            
+            <div class="year-section">
+                <div class="year-label">最新报告</div>
+                <div class="year-subtitle">战略决策级年度深度分析</div>
+            </div>
+            
+            <a href="reports/2024-Annual.pdf" class="report-card">
+                <div class="report-badge latest">最新</div>
+                <div class="report-cover">
+                    <div class="report-year-display">2024</div>
+                    <div class="report-subtitle">年度战略报告</div>
+                    <div class="report-watermark">2024</div>
+                </div>
+                <div class="report-summary">
+                    <div class="report-summary-title">
+                        <i class="ri-file-chart-2-line"></i>年报概览
+                    </div>
+                    <div class="report-summary-content">
+                        2024年是AI技术从突破到规模化应用的关键转折年。全球宏观环境复杂多变，技术创新与监管政策并行发展。行业整体保持高速增长，市场规模突破千亿美元级别。竞争格局重新洗牌，技术护城河与生态布局成为决胜关键。客户需求从尝鲜转向深度应用，对ROI和安全性提出更高要求。
+                    </div>
+                </div>
+                <div class="report-strategic-analysis">
+                    <div class="report-strategic-title">
+                        <i class="ri-compass-3-line"></i>战略分析框架
+                    </div>
+                    <div class="strategic-item">
+                        <div class="strategic-icon industry">
+                            <i class="ri-global-line"></i>
+                        </div>
+                        <div class="strategic-text">
+                            <span class="strategic-highlight">行业分析：</span>PEST分析显示政策红利期，技术成熟度曲线进入规模化阶段，市场规模预计2025年增长65%
+                        </div>
+                    </div>
+                    <div class="strategic-item">
+                        <div class="strategic-icon competition">
+                            <i class="ri-sword-line"></i>
+                        </div>
+                        <div class="strategic-text">
+                            <span class="strategic-highlight">竞争分析：</span>头部玩家加速整合，新兴企业聚焦垂直赛道，专利壁垒与人才争夺成为核心竞争要素
+                        </div>
+                    </div>
+                    <div class="strategic-item">
+                        <div class="strategic-icon market">
+                            <i class="ri-rocket-line"></i>
+                        </div>
+                        <div class="strategic-text">
+                            <span class="strategic-highlight">市场策略：</span>海外市场进入窗口期，垂直行业深度渗透，平台化战略与生态建设并重发展
+                        </div>
+                    </div>
+                    <div class="strategic-item">
+                        <div class="strategic-icon customer">
+                            <i class="ri-user-search-line"></i>
+                        </div>
+                        <div class="strategic-text">
+                            <span class="strategic-highlight">客户洞察：</span>企业级客户价值主张转向效率提升，中小企业关注成本效益，个性化需求显著增长
+                        </div>
+                    </div>
+                </div>
+                <div class="report-info">
+                    <div class="report-date">
+                        <i class="ri-calendar-check-line"></i>发布于 2025-01-30
+                    </div>
+                    <div class="report-btn">
+                        查看报告 <i class="ri-arrow-right-s-line"></i>
+                    </div>
+                </div>
+            </a>
+            
+            <div class="year-section">
+                <div class="year-label">历史报告</div>
+                <div class="year-subtitle">往年战略分析与复盘总结</div>
+            </div>
+            
+            <a href="reports/2023-Annual.pdf" class="report-card">
+                <div class="report-cover">
+                    <div class="report-year-display">2023</div>
+                    <div class="report-subtitle">年度战略报告</div>
+                    <div class="report-watermark">2023</div>
+                </div>
+                <div class="report-summary">
+                    <div class="report-summary-title">
+                        <i class="ri-file-chart-2-line"></i>年报概览
+                    </div>
+                    <div class="report-summary-content">
+                        2023年是AI行业的分水岭之年，ChatGPT引发全球AI热潮，大模型技术快速迭代。政策环境逐步明朗，监管框架初步建立。行业投资创历史新高，但也出现分化趋势。传统企业加速数字化转型，新兴应用场景层出不穷。竞争从技术单点突破转向生态系统构建。
+                    </div>
+                </div>
+                <div class="report-strategic-analysis">
+                    <div class="report-strategic-title">
+                        <i class="ri-compass-3-line"></i>战略分析框架
+                    </div>
+                    <div class="strategic-item">
+                        <div class="strategic-icon industry">
+                            <i class="ri-global-line"></i>
+                        </div>
+                        <div class="strategic-text">
+                            <span class="strategic-highlight">行业分析：</span>技术突破引发行业重构，监管政策趋严，市场教育成本降低，投资热度空前高涨
+                        </div>
+                    </div>
+                    <div class="strategic-item">
+                        <div class="strategic-icon competition">
+                            <i class="ri-sword-line"></i>
+                        </div>
+                        <div class="strategic-text">
+                            <span class="strategic-highlight">竞争分析：</span>国际巨头技术领先，国内企业快速跟进，开源社区影响力扩大，人才竞争白热化
+                        </div>
+                    </div>
+                    <div class="strategic-item">
+                        <div class="strategic-icon market">
+                            <i class="ri-rocket-line"></i>
+                        </div>
+                        <div class="strategic-text">
+                            <span class="strategic-highlight">市场策略：</span>B端市场爆发在即，C端应用快速普及，垂直行业需求分化，国际化布局提速
+                        </div>
+                    </div>
+                    <div class="strategic-item">
+                        <div class="strategic-icon customer">
+                            <i class="ri-user-search-line"></i>
+                        </div>
+                        <div class="strategic-text">
+                            <span class="strategic-highlight">客户洞察：</span>企业客户从观望转向试点，对AI的理解和接受度快速提升，个性化和安全性成为关键考量
+                        </div>
+                    </div>
+                </div>
+                <div class="report-info">
+                    <div class="report-date">
+                        <i class="ri-calendar-check-line"></i>发布于 2024-01-30
+                    </div>
+                    <div class="report-btn">
+                        查看报告 <i class="ri-arrow-right-s-line"></i>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="reports/2022-Annual.pdf" class="report-card">
+                <div class="report-cover">
+                    <div class="report-year-display">2022</div>
+                    <div class="report-subtitle">年度战略报告</div>
+                    <div class="report-watermark">2022</div>
+                </div>
+                <div class="report-summary">
+                    <div class="report-summary-title">
+                        <i class="ri-file-chart-2-line"></i>年报概览
+                    </div>
+                    <div class="report-summary-content">
+                        2022年AI技术继续深化发展，预训练大模型概念兴起。全球经济面临挑战，但AI投资保持韧性。企业级应用开始从概念验证向产业化转变。监管政策逐步完善，数据安全与隐私保护受到重视。竞争格局相对稳定，技术路线尚未完全确定。
+                    </div>
+                </div>
+                <div class="report-strategic-analysis">
+                    <div class="report-strategic-title">
+                        <i class="ri-compass-3-line"></i>战略分析框架
+                    </div>
+                    <div class="strategic-item">
+                        <div class="strategic-icon industry">
+                            <i class="ri-global-line"></i>
+                        </div>
+                        <div class="strategic-text">
+                            <span class="strategic-highlight">行业分析：</span>技术路线探索期，基础设施建设加速，行业标准化进程启动，商业化模式逐步清晰
+                        </div>
+                    </div>
+                    <div class="strategic-item">
+                        <div class="strategic-icon competition">
+                            <i class="ri-sword-line"></i>
+                        </div>
+                        <div class="strategic-text">
+                            <span class="strategic-highlight">竞争分析：</span>技术巨头持续投入，初创企业聚焦细分领域，产学研合作深化，国际竞争加剧
+                        </div>
+                    </div>
+                    <div class="strategic-item">
+                        <div class="strategic-icon market">
+                            <i class="ri-rocket-line"></i>
+                        </div>
+                        <div class="strategic-text">
+                            <span class="strategic-highlight">市场策略：</strong>垂直行业试点先行，标杆客户价值凸显，生态合作伙伴体系建设，技术标准制定参与
+                        </div>
+                    </div>
+                    <div class="strategic-item">
+                        <div class="strategic-icon customer">
+                            <i class="ri-user-search-line"></i>
+                        </div>
+                        <div class="strategic-text">
+                            <span class="strategic-highlight">客户洞察：</span>企业客户持谨慎态度，ROI期望明确，数据安全顾虑较大，培训与支持需求突出
+                        </div>
+                    </div>
+                </div>
+                <div class="report-info">
+                    <div class="report-date">
+                        <i class="ri-calendar-check-line"></i>发布于 2023-01-30
+                    </div>
+                    <div class="report-btn">
+                        查看报告 <i class="ri-arrow-right-s-line"></i>
+                    </div>
+                </div>
+            </a>
+            
+            <div class="load-more">
+                上滑加载更多
+            </div>
+        </div>
+    </div>
+    
+    <!-- 提示框 -->
+    <div class="toast-message" id="toast">进入对应报告PDF文件</div>
+    
+    <script>
+        // 模拟加载更多功能
+        const content = document.querySelector('.content');
+        const loadMore = document.querySelector('.load-more');
+        const pullIndicator = document.querySelector('.pull-indicator');
+        let isLoading = false;
+        let currentYear = 2021; // 从2022开始加载到2021
+        
+        // 年度总结数据
+        const annualSummaries = {
+            2021: "2021年AI技术基础研究取得重要突破，Transformer架构影响力扩大。疫情催化数字化进程，远程办公推动企业数字化需求。政策环境逐步友好，数据要素市场化配置开始探索。竞争格局初步形成，头部企业优势明显。客户对AI技术认知逐步提升，应用场景不断拓展。",
+            2020: "2020年疫情重塑商业环境，数字化转型加速。AI技术在疫情防控中发挥重要作用，应用价值得到验证。云计算基础设施日臻完善，为AI大规模部署奠定基础。政策支持力度加大，新基建概念提出。竞争环境相对平和，合作大于竞争。客户接受度快速提升，预算投入明显增加。"
+        };
+        
+        // 年度战略分析数据
+        const annualStrategicAnalysis = {
+            2021: [
+                { type: "industry", text: "基础研究突破期，算法模型快速演进，云计算基础设施成熟，商业化路径逐步明确" },
+                { type: "competition", text: "头部企业技术积累深厚，初创公司创新活跃，产业链分工逐步细化，国际合作仍是主流" },
+                { type: "market", text: "企业数字化转型提速，垂直行业需求涌现，SaaS模式逐步被接受，标准化产品需求增长" },
+                { type: "customer", text: "客户AI认知快速提升，试点项目成功率提高，对成本效益要求更加理性，长期合作意愿增强" }
+            ],
+            2020: [
+                { type: "industry", text: "疫情催化数字化需求，AI应用价值得到验证，政策环境持续优化，投资热情逐步升温" },
+                { type: "competition", text: "市场格局相对稳定，技术路线尚未分化，合作共赢是主旋律，国际化竞争尚不激烈" },
+                { type: "market", text: "远程办公推动需求，医疗教育领域突破，传统行业开始试水，B端市场潜力巨大" },
+                { type: "customer", text: "客户接受度快速提升，疫情倒逼数字化转型，预算投入明显增加，效果导向更加明确" }
+            ]
+        };
+        
+        // 滚动加载更多
+        content.addEventListener('scroll', function() {
+            const scrollPosition = content.scrollTop + content.clientHeight;
+            const scrollHeight = content.scrollHeight;
+            
+            // 当滚动到底部附近时加载更多
+            if (scrollPosition > scrollHeight - 50 && !isLoading) {
+                loadMoreContent();
+            }
+            
+            // 下拉刷新效果
+            if (content.scrollTop < -50) {
+                pullIndicator.style.top = '20px';
+            } else {
+                pullIndicator.style.top = '-70px';
+            }
+        });
+        
+        // 处理下拉刷新
+        content.addEventListener('touchend', function() {
+            if (content.scrollTop < -50) {
+                pullIndicator.innerHTML = '<i class="ri-loader-4-line"></i>';
+                
+                // 模拟刷新
+                setTimeout(() => {
+                    pullIndicator.style.top = '-70px';
+                    pullIndicator.innerHTML = '<i class="ri-arrow-down-line"></i>';
+                    // 这里可以添加刷新数据的逻辑
+                }, 1500);
+            }
+        });
+        
+        function loadMoreContent() {
+            if (currentYear < 2020) return;
+            
+            isLoading = true;
+            loadMore.textContent = "加载中...";
+            
+            // 模拟加载延迟
+            setTimeout(() => {
+                // 创建新的年报卡片
+                const newCard = document.createElement('a');
+                newCard.className = 'report-card';
+                newCard.href = `reports/${currentYear}-Annual.pdf`;
+                newCard.style.opacity = '0';
+                
+                // 获取年度数据
+                const summary = annualSummaries[currentYear] || `${currentYear}年AI行业稳步发展，技术创新持续推进。政策环境逐步完善，市场需求不断增长。竞争格局相对稳定，合作机会增多。客户接受度逐步提升，应用场景不断拓展。整体而言，行业发展健康有序，未来前景可期。`;
+                const strategicAnalysis = annualStrategicAnalysis[currentYear] || [
+                    { type: "industry", text: `${currentYear}年行业基础扎实，发展势头良好，技术进步稳步推进，市场前景广阔` },
+                    { type: "competition", text: `竞争环境良性发展，技术创新是核心驱动力，合作共赢成为主流趋势` },
+                    { type: "market", text: `市场需求持续增长，应用场景不断拓展，商业化进程稳步推进` },
+                    { type: "customer", text: `客户认知逐步提升，接受度持续改善，合作深度不断加深` }
+                ];
+                
+                // 构建战略分析HTML
+                let strategicHTML = '';
+                strategicAnalysis.forEach(item => {
+                    const iconMap = {
+                        industry: 'ri-global-line',
+                        competition: 'ri-sword-line',
+                        market: 'ri-rocket-line',
+                        customer: 'ri-user-search-line'
+                    };
+                    
+                    const titleMap = {
+                        industry: '行业分析',
+                        competition: '竞争分析',
+                        market: '市场策略',
+                        customer: '客户洞察'
+                    };
+                    
+                    strategicHTML += `
+                        <div class="strategic-item">
+                            <div class="strategic-icon ${item.type}">
+                                <i class="${iconMap[item.type]}"></i>
+                            </div>
+                            <div class="strategic-text">
+                                <span class="strategic-highlight">${titleMap[item.type]}：</span>${item.text}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                newCard.innerHTML = `
+                    <div class="report-cover">
+                        <div class="report-year-display">${currentYear}</div>
+                        <div class="report-subtitle">年度战略报告</div>
+                        <div class="report-watermark">${currentYear}</div>
+                    </div>
+                    <div class="report-summary">
+                        <div class="report-summary-title">
+                            <i class="ri-file-chart-2-line"></i>年报概览
+                        </div>
+                        <div class="report-summary-content">
+                            ${summary}
+                        </div>
+                    </div>
+                    <div class="report-strategic-analysis">
+                        <div class="report-strategic-title">
+                            <i class="ri-compass-3-line"></i>战略分析框架
+                        </div>
+                        ${strategicHTML}
+                    </div>
+                    <div class="report-info">
+                        <div class="report-date">
+                            <i class="ri-calendar-check-line"></i>发布于 ${currentYear + 1}-01-30
+                        </div>
+                        <div class="report-btn">
+                            查看报告 <i class="ri-arrow-right-s-line"></i>
+                        </div>
+                    </div>
+                `;
+                
+                // 在加载更多提示前插入新内容
+                content.insertBefore(newCard, loadMore);
+                
+                // 添加动画效果
+                setTimeout(() => {
+                    newCard.style.opacity = '1';
+                    newCard.style.transform = 'translateY(0)';
+                }, 50);
+                
+                // 更新年份计数
+                currentYear--;
+                
+                // 恢复加载状态
+                isLoading = false;
+                if (currentYear >= 2020) {
+                    loadMore.textContent = "上滑加载更多";
+                } else {
+                    loadMore.textContent = "没有更多内容";
+                }
+                
+            }, 1200);
+        }
+        
+        // 处理点击事件，显示提示框
+        document.addEventListener('click', function(e) {
+            // 查找最近的报告按钮
+            const reportBtn = e.target.closest('.report-btn');
+            // 查找最近的报告卡片（但不是通过按钮点击的）
+            const reportCard = e.target.closest('.report-card');
+            
+            if (reportBtn) {
+                // 阻止默认跳转行为
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // 显示提示框
+                toast.textContent = "进入对应报告PDF文件";
+                toast.classList.add('show');
+                
+                // 2.5秒后隐藏提示框
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    
+                    // 找到父级 report-card 的 href
+                    const card = reportBtn.closest('.report-card');
+                    if (card && card.href) {
+                        console.log('打开报告:', card.href);
+                    }
+                }, 2500);
+            } 
+            else if (reportCard && !e.target.closest('.report-btn')) {
+                // 如果点击的是卡片但不是按钮
+                e.preventDefault();
+                
+                // 显示提示框
+                toast.textContent = "进入对应报告PDF文件";
+                toast.classList.add('show');
+                
+                // 2.5秒后隐藏提示框
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    
+                    // 直接使用卡片的 href
+                    if (reportCard.href) {
+                        console.log('打开报告:', reportCard.href);
+                    }
+                }, 2500);
+            }
+        });
+    </script>
+</body>
+</html> 

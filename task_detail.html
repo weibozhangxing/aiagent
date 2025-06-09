@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>任务详情 - 机器人生态商业计划书</title>
+    <!-- 阿里巴巴普惠体 -->
+    <link href="https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-55-Regular/AlibabaPuHuiTi-3-55-Regular.css" rel="stylesheet">
+    <link href="https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-65-Medium/AlibabaPuHuiTi-3-65-Medium.css" rel="stylesheet">
+    <link href="https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-75-SemiBold/AlibabaPuHuiTi-3-75-SemiBold.css" rel="stylesheet">
+    
+    <!-- iconfont 图标库 -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://at.alicdn.com/t/c/font_4431638_cpv7nz8taf4.css" rel="stylesheet">
+    
+    <!-- ECharts库 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'AlibabaPuHuiTi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background-color: #f8f9fc;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .device-frame {
+            width: 100%;
+            max-width: 430px;
+            height: 100%;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .ios-container {
+            flex: 1;
+            background-color: #f8f9fc;
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        .status-bar {
+            height: 44px;
+            background-color: #f8f9fc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .status-bar .time {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .status-bar .icons {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-bar .icon {
+            margin-left: 6px;
+        }
+        
+        .nav-header {
+            height: 56px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        
+        .back-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #007AFF;
+            font-size: 24px;
+            text-decoration: none;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+            margin-left: -8px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .back-btn:active {
+            background-color: rgba(0, 122, 255, 0.1);
+        }
+        
+        .back-btn i {
+            font-size: 28px;
+            pointer-events: none;
+        }
+        
+        .page-title {
+            flex: 1;
+            text-align: center;
+            font-size: 17px;
+            font-weight: 600;
+            color: #000;
+            margin-left: -36px;
+            position: relative;
+            z-index: 5;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 20px 16px;
+            height: calc(100% - 110px);
+            overflow-y: auto;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .content::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* 任务卡片样式 */
+        .task-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 14px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+        
+        .task-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(60, 60, 67, 0.08);
+            position: relative;
+        }
+        
+        .task-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .task-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1c1c1e;
+            line-height: 1.3;
+            flex: 1;
+            padding-right: 16px;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            background-color: rgba(255, 59, 48, 0.1);
+            color: #FF3B30;
+        }
+        
+        .status-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin-right: 5px;
+            background-color: #FF3B30;
+        }
+        
+        .task-people {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+        }
+        
+        .task-person {
+            display: flex;
+            align-items: center;
+            padding: 6px 10px;
+            border-radius: 10px;
+            font-size: 13px;
+            color: #4c4c4c;
+            position: relative;
+            overflow: hidden;
+            background-color: rgba(60, 60, 67, 0.06);
+        }
+        
+        .task-person:nth-child(1) {
+            color: #007AFF;
+            background-color: rgba(0, 122, 255, 0.08);
+        }
+        
+        .task-person:nth-child(2) {
+            color: #34C759;
+            background-color: rgba(52, 199, 89, 0.08);
+        }
+        
+        .task-person:nth-child(3) {
+            color: #FF9500;
+            background-color: rgba(255, 149, 0, 0.08);
+        }
+        
+        .task-person i {
+            margin-right: 6px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .section {
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(60, 60, 67, 0.08);
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        
+        .section-icon {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: #007AFF;
+            font-size: 16px;
+            border-radius: 8px;
+            background-color: rgba(0, 122, 255, 0.1);
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1c1c1e;
+        }
+        
+        .section-content {
+            background-color: rgba(60, 60, 67, 0.03);
+            border-radius: 16px;
+            padding: 16px;
+            font-size: 15px;
+            color: #3c3c43;
+            line-height: 1.5;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: rgba(120, 120, 128, 0.16);
+            border-radius: 5px;
+            margin: 14px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF6B6B, #F53F3F);
+            width: 35%;
+            border-radius: 5px;
+        }
+        
+        .milestone {
+            margin-top: 0;
+        }
+        
+        .milestone-title {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #1c1c1e;
+        }
+        
+        .milestone-date {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            color: #007AFF;
+            background-color: rgba(0, 122, 255, 0.08);
+            padding: 6px 10px;
+            border-radius: 10px;
+            width: fit-content;
+        }
+        
+        .milestone-date i {
+            margin-right: 6px;
+        }
+        
+        .warning-box {
+            background-color: rgba(255, 154, 46, 0.08);
+            border-radius: 16px;
+            padding: 18px;
+            margin-top: 12px;
+        }
+        
+        .warning-title {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: #FF9A2E;
+            margin-bottom: 12px;
+        }
+        
+        .warning-title i {
+            margin-right: 8px;
+        }
+        
+        .warning-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #3c3c43;
+            margin-bottom: 16px;
+        }
+        
+        .divider {
+            height: 1px;
+            background-color: rgba(60, 60, 67, 0.1);
+            margin: 16px 0;
+        }
+        
+        .suggestion-title {
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: #FF9500;
+            margin-bottom: 12px;
+        }
+        
+        .suggestion-title i {
+            margin-right: 8px;
+        }
+        
+        .suggestion-list {
+            list-style: none;
+        }
+        
+        .suggestion-item {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #3c3c43;
+        }
+        
+        .suggestion-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .suggestion-item::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #FF9500;
+            font-weight: bold;
+        }
+        
+        .chart-container {
+            height: 250px;
+            margin-top: 16px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .file-list {
+            list-style: none;
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            background-color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 8px;
+            border-radius: 12px;
+            font-size: 13px;
+            color: #3c3c43;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease;
+        }
+        
+        .file-item:active {
+            transform: scale(0.98);
+        }
+        
+        .file-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .file-item::before {
+            content: "\ea77";
+            font-family: 'remixicon';
+            margin-right: 10px;
+            color: #007AFF;
+            font-size: 16px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .action-button {
+            flex: 1;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.15s ease, opacity 0.15s ease;
+        }
+        
+        .action-button:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+        
+        .primary-button {
+            background-color: #007AFF;
+            color: white;
+            box-shadow: 0 1px 4px rgba(0, 122, 255, 0.25);
+        }
+        
+        .secondary-button {
+            background-color: rgba(0, 122, 255, 0.08);
+            color: #007AFF;
+            border: none;
+        }
+        
+        /* 新增的背景图案 */
+        .pattern-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');
+            background-size: cover;
+            opacity: 0.03;
+            z-index: -1;
+        }
+        
+        /* 新增的标签式标签 */
+        .tag-label {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            background-color: rgba(0, 122, 255, 0.08);
+            color: #007AFF;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .tag-label i {
+            margin-right: 4px;
+            font-size: 14px;
+        }
+        
+        .status-info {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            gap: 6px;
+        }
+        
+        .status-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-radius: 14px;
+            padding: 10px 6px;
+            width: 32%;
+        }
+        
+        .status-item:nth-child(1) {
+            background-color: rgba(255, 59, 48, 0.06);
+        }
+        
+        .status-item:nth-child(2) {
+            background-color: rgba(255, 149, 0, 0.06);
+        }
+        
+        .status-item:nth-child(3) {
+            background-color: rgba(0, 122, 255, 0.06);
+        }
+        
+        .status-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1c1c1e;
+            margin-bottom: 4px;
+        }
+        
+        .status-label {
+            font-size: 11px;
+            color: #8E8E93;
+            text-align: center;
+        }
+        
+        /* 顶部指示器 */
+        .home-indicator {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 134px;
+            height: 5px;
+            background-color: #000;
+            border-radius: 3px;
+            opacity: 0.3;
+        }
+        
+        .chat-input-container {
+            padding: 10px 16px 30px;
+            background-color: #ffffff;
+            border-top: 1px solid #f0f0f0;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+            right: 0;
+            z-index: 100;
+        }
+        
+        .function-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+        
+        .scene-switcher {
+            display: flex;
+            align-items: center;
+            background-color: #f5f7fa;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .network-toggle {
+            display: flex;
+            align-items: center;
+            background-color: #f0f5ff;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #1a73e8;
+            margin-left: 0;
+            margin-right: auto;
+        }
+        
+        .network-toggle i {
+            font-size: 18px;
+            margin-right: 4px;
+            color: #1a73e8;
+        }
+        
+        .scene-switcher i, .network-toggle i {
+            font-size: 16px;
+            margin-right: 4px;
+            color: #666;
+        }
+        
+        .scene-switcher .ri-arrow-down-s-line {
+            margin-left: 4px;
+            margin-right: 0;
+        }
+        
+        .scene-switcher:hover, .network-toggle:hover {
+            background-color: #e9ecf1;
+        }
+        
+        .network-toggle.active {
+            background-color: #e8f1ff;
+            color: #1a73e8;
+        }
+        
+        .network-toggle.active i {
+            color: #1a73e8;
+        }
+        
+        .chat-input {
+            display: flex;
+            align-items: center;
+            background-color: #f5f7fa;
+            border-radius: 30px;
+            padding: 10px 16px;
+        }
+        
+        .input-area {
+            flex: 1;
+            font-size: 15px;
+            background: none;
+            border: none;
+            outline: none;
+            color: #333;
+            height: 24px;
+            margin: 0 8px;
+        }
+        
+        .input-tools {
+            display: flex;
+            align-items: center;
+        }
+        
+        .tool-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 4px;
+            cursor: pointer;
+        }
+        
+        .tool-btn i {
+            font-size: 20px;
+            color: #666;
+        }
+        
+        .plus-btn i {
+            font-size: 22px;
+            color: #1a73e8;
+        }
+        
+        .camera-btn {
+            margin-right: 4px;
+        }
+        
+        .camera-btn i {
+            color: #666;
+            font-size: 20px;
+        }
+        
+        /* 扩展菜单样式 */
+        .extended-menu {
+            display: none;
+            justify-content: space-around;
+            padding: 16px 0 8px 0;
+            background-color: #f5f7fa;
+            border-radius: 16px;
+            margin-top: 12px;
+        }
+        
+        .extended-menu-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 70px;
+        }
+        
+        .menu-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .menu-icon i {
+            font-size: 24px;
+            color: #1a73e8;
+        }
+        
+        .menu-text {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* 适配底部安全区域 */
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            .chat-input-container {
+                padding-bottom: calc(10px + env(safe-area-inset-bottom));
+            }
+        }
+        
+        /* Scene dropdown menu */
+        .scene-dropdown {
+            position: absolute;
+            bottom: 65px;
+            left: 10px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 130px;
+            overflow: hidden;
+            z-index: 999;
+            display: none;
+        }
+        
+        .scene-option {
+            padding: 12px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .scene-option:hover, .scene-option.active {
+            background-color: #f5f7fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="device-frame">
+        <div class="ios-container">
+            <div class="pattern-bg"></div>
+            
+            <!-- 状态栏 -->
+            <div class="status-bar">
+                <div class="time">9:41</div>
+                <div class="icons">
+                    <div class="icon">
+                        <i class="ri-signal-wifi-fill"></i>
+                    </div>
+                    <div class="icon">
+                        <i class="ri-battery-fill"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 导航栏 -->
+            <div class="nav-header">
+                <a href="javascript:history.back()" class="back-btn">
+                    <i class="ri-arrow-left-s-line"></i>
+                </a>
+                <div class="page-title">任务详情</div>
+            </div>
+            
+            <!-- 主内容区 -->
+            <div class="content">
+                <div class="task-card">
+                    <div class="task-header">
+                        <div class="task-title-row" style="display: flex; align-items: center; gap: 10px;">
+                            <div class="status-badge" style="background-color: transparent; padding: 0; display: flex; align-items: center;">
+                                <span class="dot" style="width: 20px; height: 20px; margin: 0; flex-shrink: 0;"></span>
+                            </div>
+                            <h1 class="task-title">机器人生态商业计划书</h1>
+                        </div>
+                        
+                        <div class="task-people">
+                            <span style="background:#f5f6fa; color:#888; border-radius:8px; padding:2px 10px; font-size:13px; display:inline-flex; align-items:center;">
+                                <i class="ri-user-3-line" style="font-size:15px; margin-right:4px;"></i>尹航
+                            </span>
+                            <span style="background:#f5f6fa; color:#888; border-radius:8px; padding:2px 10px; font-size:13px; display:inline-flex; align-items:center;">
+                                <i class="ri-building-line" style="font-size:15px; margin-right:4px;"></i>机器人生态产品部
+                            </span>
+                            <span style="background:#f5f6fa; color:#888; border-radius:8px; padding:2px 10px; font-size:13px; display:inline-flex; align-items:center;">
+                                <i class="ri-group-line" style="font-size:15px; margin-right:4px;"></i>联执委项目
+                            </span>
+                        </div>
+                    </div>
+                    <div class="section" style="margin-bottom: 16px;">
+                        <div style="background-color: #FFF9F2; border-radius: 16px; padding: 0; margin-bottom: 16px; overflow: hidden; border: 1px solid rgba(255, 149, 0, 0.1);">
+                            <!-- 风险预警部分 -->
+                            <div style="padding: 16px 20px;">
+                                <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                                    <i class="ri-error-warning-line" style="color: #FF3B30; font-size: 18px; margin-right: 8px;"></i>
+                                    <span style="font-size: 14px; font-weight: 600; color: #FF3B30;">风险提示</span>
+                                </div>
+                                <div style="font-size: 14px; line-height: 1.6; color: #333; font-weight: normal;">
+                                    检测到当前项目进度落后，距离预期里程碑仅剩4天，完成概率低于35%。主要风险点为商业计划书初稿修订周期延长，外部合作方反馈延迟。
+                                </div>
+                            </div>
+                            
+                            <!-- 分隔线 -->
+                            <div style="height: 1px; background-color: rgba(255, 149, 0, 0.15);"></div>
+                            
+                            <!-- 建议措施部分 -->
+                            <div style="padding: 16px 20px;">
+                                <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                                    <i class="ri-lightbulb-line" style="color: #FF9500; font-size: 18px; margin-right: 8px;"></i>
+                                    <span style="font-size: 14px; font-weight: 600; color: #FF9500;">建议措施</span>
+                                </div>
+                                <div style="font-size: 14px; line-height: 1.6; color: #333; font-weight: normal;">
+                                    <div style="margin-bottom: 8px;">1. 紧急召开项目推进会议，重新评估关键路径</div>
+                                    <div style="margin-bottom: 8px;">2. 考虑增加2名外部顾问协助文档编制</div>
+                                    <div>3. 建立每日进度简报机制，确保各方及时反馈</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">任务阶段</div>
+                        </div>
+                        <div class="section-content">
+                            <div class="tag-label">
+                                <i class="ri-flag-line"></i>
+                                <span>关口五阶段</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">最近里程碑</div>
+                        </div>
+                        <div class="section-content">
+                            <div class="milestone">
+                                <div class="milestone-title">完成商业计划书初稿并提交董事会审议</div>
+                                <div class="milestone-date">
+                                    <i class="ri-calendar-line"></i>
+                                    <span>约定完成时间: 2024-03-20</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">突出张力</div>
+                        </div>
+                        <div class="section-content">
+                            <div class="warning-text">
+                                商业计划书初稿完成度不足，外部合作方需求变更频繁，导致项目进度严重滞后。
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">突出张力的处理对策</div>
+                        </div>
+                        <div class="section-content">
+                            <ul class="suggestion-list">
+                                <li class="suggestion-item">与联执委沟通，申请延长项目交付期限</li>
+                                <li class="suggestion-item">召集所有相关方进行需求冻结会议</li>
+                                <li class="suggestion-item">增加文档编写专家资源投入</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">突出张力的处理结果</div>
+                        </div>
+                        <div class="section-content">
+                            <div class="warning-text">
+                                需求已冻结，但项目期限未获批准延长。已增派2名外部顾问协助加速文档编写，预计仍有35%概率能按期完成初稿交付。
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">项目团队士气与人员进出</div>
+                        </div>
+                        <div class="section-content">
+                            <div class="warning-text">
+                                团队士气受到项目延期影响有所下降，核心成员工作压力大。近期有1名技术专家离职，2名外部顾问临时加入协助文档编写。建议关注团队情绪，适时组织团建活动。
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">重要奖惩信息</div>
+                        </div>
+                        <div class="section-content">
+                            <div class="warning-text">
+                                张明因在需求冻结会议中表现突出获部门月度优秀员工；李强因多次延误文档提交被口头警告；产品小组获"最佳协作团队"提名，待项目结束后评定。
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">重要经验与教训</div>
+                        </div>
+                        <div class="section-content">
+                            <div class="warning-text">
+                                经验：跨部门协作机制效果显著，定期同步会有效提升沟通效率。教训：前期需求收集不充分，外部依赖项评估不足，导致多次返工，建议后续项目加强需求锁定和风险预判。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="home-indicator"></div>
+        </div>
+    </div>
+    
+    <div class="chat-input-container">
+        <div class="function-bar">
+            <div class="scene-switcher">
+                <i class="iconfont icon-quanjing"></i>
+                <span>任务决策</span>
+                <i class="ri-arrow-down-s-line"></i>
+            </div>
+            <div class="network-toggle active">
+                <i class="ri-global-line"></i>
+                <span>联网</span>
+            </div>
+        </div>
+        <div class="chat-input">
+            <div class="tool-btn camera-btn">
+                <i class="ri-camera-line"></i>
+            </div>
+            <input type="text" class="input-area" placeholder="请输入您要了解或下发的任务～" autofocus>
+            <div class="input-tools">
+                <div class="tool-btn">
+                    <i class="ri-mic-line"></i>
+                </div>
+                <div class="tool-btn plus-btn">
+                    <i class="ri-add-line"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 添加扩展菜单，默认隐藏 -->
+        <div class="extended-menu">
+            <div class="extended-menu-item">
+                <div class="menu-icon">
+                    <i class="ri-camera-line"></i>
+                </div>
+                <div class="menu-text">拍照</div>
+            </div>
+            <div class="extended-menu-item">
+                <div class="menu-icon">
+                    <i class="ri-image-line"></i>
+                </div>
+                <div class="menu-text">上传照片</div>
+            </div>
+            <div class="extended-menu-item">
+                <div class="menu-icon">
+                    <i class="ri-file-line"></i>
+                </div>
+                <div class="menu-text">上传文件</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 新增：输入框相关功能
+        // 处理"+"按钮点击事件
+        const plusBtn = document.querySelector('.plus-btn');
+        const extendedMenu = document.querySelector('.extended-menu');
+        let plusMenuVisible = false;
+        
+        plusBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (plusMenuVisible) {
+                extendedMenu.style.display = 'none';
+            } else {
+                extendedMenu.style.display = 'flex';
+            }
+            plusMenuVisible = !plusMenuVisible;
+        });
+        
+        // 点击其他区域关闭扩展菜单
+        document.addEventListener('click', function(e) {
+            if (!plusBtn.contains(e.target) && !extendedMenu.contains(e.target) && plusMenuVisible) {
+                extendedMenu.style.display = 'none';
+                plusMenuVisible = false;
+            }
+        });
+        
+        // 所有输入框相关元素点击后跳转到task_agent.html
+        document.querySelector('.input-area').addEventListener('click', function() {
+            window.location.href = 'task_agent.html';
+        });
+
+        document.querySelector('.camera-btn').addEventListener('click', function() {
+            window.location.href = 'task_agent.html';
+        });
+
+        document.querySelector('.tool-btn i.ri-mic-line').parentNode.addEventListener('click', function() {
+            window.location.href = 'task_agent.html';
+        });
+        
+        // Scene switcher functionality
+        const sceneSwitcher = document.querySelector('.scene-switcher');
+        let sceneDropdown;
+        
+        sceneSwitcher.addEventListener('click', function(e) {
+            e.stopPropagation();
+            
+            // Create dropdown if it doesn't exist
+            if (!sceneDropdown) {
+                sceneDropdown = document.createElement('div');
+                sceneDropdown.className = 'scene-dropdown';
+                sceneDropdown.innerHTML = `
+                    <div class="scene-option">通用场景</div>
+                    <div class="scene-option active">任务决策</div>
+                    <div class="scene-option">经营决策</div>
+                    <div class="scene-option">战略决策</div>
+                `;
+                document.querySelector('.chat-input-container').appendChild(sceneDropdown);
+                
+                // Add click events to options
+                const sceneOptions = sceneDropdown.querySelectorAll('.scene-option');
+                sceneOptions.forEach(option => {
+                    option.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        
+                        // Navigate to appropriate page based on selection
+                        const selectedText = this.textContent;
+                        switch(selectedText) {
+                            case '通用场景':
+                                window.location.href = 'chat.html';
+                                return;
+                            case '任务决策':
+                                window.location.href = 'task_agent.html';
+                                return;
+                            case '经营决策':
+                                window.location.href = 'fund_agent.html';
+                                return;
+                            case '战略决策':
+                                window.location.href = 'strategy_agent.html';
+                                return;
+                        }
+                        
+                        // Update active state
+                        sceneOptions.forEach(opt => opt.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // Update scene switcher text
+                        sceneSwitcher.querySelector('span').textContent = this.textContent;
+                        
+                        // Hide dropdown
+                        sceneDropdown.style.display = 'none';
+                    });
+                });
+            }
+            
+            // Toggle dropdown visibility
+            if (getComputedStyle(sceneDropdown).display !== 'none') {
+                sceneDropdown.style.display = 'none';
+            } else {
+                sceneDropdown.style.display = 'block';
+            }
+        });
+        
+        // Network toggle functionality
+        const networkToggle = document.querySelector('.network-toggle');
+        networkToggle.addEventListener('click', function() {
+            this.classList.toggle('active');
+            if (this.classList.contains('active')) {
+                this.querySelector('span').textContent = '联网';
+            } else {
+                this.querySelector('span').textContent = '不联网';
+            }
+        });
+        
+        // Hide scene dropdown when clicking elsewhere
+        document.addEventListener('click', function(e) {
+            if (sceneDropdown && sceneDropdown.style.display === 'block' && !sceneSwitcher.contains(e.target) && !sceneDropdown.contains(e.target)) {
+                sceneDropdown.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html> 
