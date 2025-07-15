@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>智舵 - CEO专属AI助手</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://at.alicdn.com/t/c/font_4431638_cpv7nz8taf4.css" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-55-Regular/AlibabaPuHuiTi-3-55-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-65-Medium/AlibabaPuHuiTi-3-65-Medium.woff2') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-75-SemiBold/AlibabaPuHuiTi-3-75-SemiBold.woff2') format('woff2');
+            font-weight: 600;
+            font-style: normal;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'AlibabaPuHuiTi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background-color: #f8f9fc;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .ios-container {
+            width: 100%;
+            height: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        .status-bar {
+            height: 44px;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .status-bar .time {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .status-bar .icons {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-bar .icon {
+            margin-left: 6px;
+        }
+        
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            height: calc(100% - 44px);
+        }
+        
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 60px;
+            margin-bottom: 50px;
+        }
+        
+        .logo {
+            width: 100px;
+            height: 100px;
+            background-color: #007AFF;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 20px rgba(0, 122, 255, 0.2);
+        }
+        
+        .logo i {
+            font-size: 52px;
+            color: white;
+        }
+        
+        .app-name {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .app-desc {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .login-form {
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            height: 54px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 0 20px;
+            font-size: 16px;
+            background-color: #f5f7fa;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .input-group input:focus {
+            border-color: #007AFF;
+            background-color: #f0f5ff;
+        }
+        
+        .login-btn {
+            width: 100%;
+            height: 54px;
+            background-color: #007AFF;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            outline: none;
+        }
+        
+        .login-btn:active {
+            background-color: #0062cc;
+        }
+        
+        .other-login {
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: #e0e0e0;
+        }
+        
+        .divider span {
+            padding: 0 15px;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .wechat-login {
+            width: 100%;
+            height: 54px;
+            background-color: #f5f7fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .wechat-login:active {
+            background-color: #e5e5e5;
+        }
+        
+        .wechat-login i {
+            font-size: 22px;
+            color: #07C160;
+            margin-right: 8px;
+        }
+        
+        .wechat-login span {
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .privacy {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .privacy a {
+            color: #007AFF;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="ios-container">
+        <div class="status-bar">
+            <div class="time">9:41</div>
+            <div class="icons">
+                <div class="icon">
+                    <i class="ri-signal-wifi-fill"></i>
+                </div>
+                <div class="icon">
+                    <i class="ri-battery-fill"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="ri-steering-2-fill"></i>
+                </div>
+                <h1 class="app-name">智舵</h1>
+                <p class="app-desc">CEO专属AI助手</p>
+            </div>
+            
+            <div class="login-form">
+                <div class="input-group">
+                    <input type="tel" placeholder="请输入手机号" maxlength="11">
+                </div>
+                <div class="input-group">
+                    <input type="password" placeholder="请输入密码">
+                </div>
+                
+                <button class="login-btn" id="loginBtn">登录</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 获取登录按钮元素
+        const loginBtn = document.querySelector('#loginBtn');
+        
+        // 添加点击事件监听器
+        loginBtn.addEventListener('click', function() {
+            // 这里可以添加表单验证逻辑
+            // 例如检查手机号是否合法、验证码是否已填写等
+            
+            // 跳转到 fund_agent.html 页面
+            window.location.href = 'fund_agent.html';
+        });
+    </script>
+</body>
+</html> 

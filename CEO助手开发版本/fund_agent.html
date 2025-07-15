@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>智舵 - 小舵</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://at.alicdn.com/t/c/font_4431638_cpv7nz8taf4.css" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-55-Regular/AlibabaPuHuiTi-3-55-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-65-Medium/AlibabaPuHuiTi-3-65-Medium.woff2') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'AlibabaPuHuiTi';
+            src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-75-SemiBold/AlibabaPuHuiTi-3-75-SemiBold.woff2') format('woff2');
+            font-weight: 600;
+            font-style: normal;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'AlibabaPuHuiTi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background-color: #f8f9fc;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .ios-container {
+            width: 100%;
+            height: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+            background-color: #f8f9fc;
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .status-bar {
+            height: 44px;
+            background-color: #f8f9fc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .status-bar .time {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .status-bar .icons {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-bar .icon {
+            margin-left: 6px;
+        }
+        
+        .chat-header {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+        }
+        
+        .chat-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .back-btn, .more-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .back-btn i, .more-btn i {
+            font-size: 24px;
+            color: #666;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            background-color: #f8f9fc;
+        }
+        
+        .message-day {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin: 8px 0 16px;
+            position: relative;
+        }
+        
+        .message-day:before, .message-day:after {
+            content: "";
+            height: 1px;
+            background-color: #f0f0f0;
+            flex: 1;
+            position: absolute;
+            top: 50%;
+            width: 30%;
+        }
+        
+        .message-day:before {
+            left: 0;
+        }
+        
+        .message-day:after {
+            right: 0;
+        }
+        
+        .message {
+            max-width: 80%;
+            margin-bottom: 16px;
+            position: relative;
+            align-self: flex-start;
+        }
+        
+        .message.system {
+            align-self: flex-start;
+        }
+        
+        .message.user {
+            align-self: flex-end;
+        }
+        
+        .message-content {
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 15px;
+            line-height: 1.5;
+            position: relative;
+        }
+        
+        .system .message-content {
+            background-color: #ffffff;
+            color: #333;
+            border-top-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .user .message-content {
+            background-color: #1a73e8;
+            color: white;
+            border-top-right-radius: 4px;
+            box-shadow: 0 2px 8px rgba(26, 115, 232, 0.1);
+        }
+        
+        .chat-input-container {
+            padding: 10px 16px 30px;
+            background-color: #ffffff;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .chat-input {
+            display: flex;
+            align-items: center;
+            background-color: #f5f7fa;
+            border-radius: 30px;
+            padding: 10px 16px;
+        }
+        
+        .input-area {
+            flex: 1;
+            font-size: 15px;
+            background: none;
+            border: none;
+            outline: none;
+            color: #333;
+            height: 24px;
+            margin: 0 8px;
+        }
+        
+        .input-tools {
+            display: flex;
+            align-items: center;
+        }
+        
+        .tool-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 4px;
+            cursor: pointer;
+        }
+        
+        .tool-btn i {
+            font-size: 20px;
+            color: #666;
+        }
+        
+        .plus-btn i {
+            font-size: 22px;
+            color: #1a73e8;
+        }
+        
+        .camera-btn {
+            margin-right: 4px;
+        }
+        
+        .camera-btn i {
+            color: #666;
+            font-size: 20px;
+        }
+        
+        /* 扩展菜单样式 */
+        .extended-menu {
+            display: none;
+            justify-content: space-around;
+            padding: 16px 0 8px 0;
+            background-color: #f5f7fa;
+            border-radius: 16px;
+            margin-top: 12px;
+        }
+        
+        .extended-menu-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 70px;
+        }
+        
+        .menu-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .menu-icon i {
+            font-size: 24px;
+            color: #1a73e8;
+        }
+        
+        .menu-text {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* 适配底部安全区域 */
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            .chat-input-container {
+                padding-bottom: calc(10px + env(safe-area-inset-bottom));
+            }
+        }
+        
+        .new-chat-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f0f5ff;
+            border: 1px solid #e1e8ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .new-chat-btn:hover {
+            background: #e8f1ff;
+            border-color: #1a73e8;
+        }
+        
+        .new-chat-btn i {
+            font-size: 18px;
+            color: #1a73e8;
+        }
+        
+        /* 历史记录按钮样式 */
+        .history-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .history-btn:hover {
+            background: rgba(26, 115, 232, 0.1);
+        }
+        
+        .history-btn i {
+            font-size: 18px;
+            color: #1a73e8;
+        }
+        
+        /* 历史记录弹出层样式 */
+        .history-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .history-modal {
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        
+        .history-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            background: #f8f9fc;
+        }
+        
+        .history-modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .close-history-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .close-history-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .close-history-btn i {
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .history-modal-content {
+            max-height: 60vh;
+            overflow-y: auto;
+            padding: 12px 0;
+        }
+        
+        .history-question-item {
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        
+        .history-question-item:hover {
+            background: #f0f5ff;
+        }
+        
+        .history-question-item:last-child {
+            border-bottom: none;
+        }
+        
+        .question-text {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+        
+        .question-time {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        /* 添加旋转动画 */
+        .rotating {
+            animation: rotate 2s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .settings-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f0f5ff;
+            border: 1px solid #e1e8ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .settings-btn:hover {
+            background: #e8f1ff;
+            border-color: #1a73e8;
+        }
+        
+        .settings-btn i {
+            font-size: 18px;
+            color: #1a73e8;
+        }
+    </style>
+</head>
+<body>
+    <div class="ios-container">
+        <div class="status-bar">
+            <div class="time">9:41</div>
+            <div class="icons">
+                <div class="icon">
+                    <i class="ri-signal-wifi-fill"></i>
+                </div>
+                <div class="icon">
+                    <i class="ri-battery-fill"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-header">
+            <div class="history-btn" id="historyBtn">
+                <i class="ri-history-line"></i>
+            </div>
+            <div class="chat-title">
+                <span>小舵助手</span>
+            </div>
+            <div class="settings-btn" id="settingsBtn">
+                <i class="ri-more-fill"></i>
+            </div>
+        </div>
+        
+        <!-- 历史记录弹出层 -->
+        <div class="history-overlay" id="historyOverlay" style="display: none;">
+            <div class="history-modal">
+                <div class="history-modal-header">
+                    <div class="history-modal-title">历史提问记录</div>
+                    <div class="close-history-btn" id="closeHistoryBtn">
+                        <i class="ri-close-line"></i>
+                    </div>
+                </div>
+                <div class="history-modal-content">
+                    <div class="history-question-item">
+                        <div class="question-text">小舵，帮我看看这几天公司经营数据怎么样？</div>
+                        <div class="question-time">今天 14:25</div>
+                    </div>
+                    
+                    <div class="history-question-item">
+                        <div class="question-text">竞品Q1数据分析。</div>
+                        <div class="question-time">今天 13:18</div>
+                    </div>
+                    
+                    <div class="history-question-item">
+                        <div class="question-text">公司的组织架构和激励机制调整建议。</div>
+                        <div class="question-time">今天 12:45</div>
+                    </div>
+                    
+                    <div class="history-question-item">
+                        <div class="question-text">公司控制成本的方法分析</div>
+                        <div class="question-time">今天 11:30</div>
+                    </div>
+                    
+                    <div class="history-question-item">
+                        <div class="question-text">公司进入海外市场战略沙盘推演。</div>
+                        <div class="question-time">今天 10:15</div>
+                    </div>
+                    
+                    <div class="history-question-item">
+                        <div class="question-text">深度分析是否应该收购竞品智学科技？</div>
+                        <div class="question-time">昨天 16:40</div>
+                    </div>
+                    
+                    <div class="history-question-item">
+                        <div class="question-text">帮我看一下今天的业绩数据，还有Q4的完成情况</div>
+                        <div class="question-time">昨天 15:22</div>
+                    </div>
+                    
+                    <div class="history-question-item">
+                        <div class="question-text">分析一下我们公司的财务状况</div>
+                        <div class="question-time">昨天 14:10</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-messages">
+            <div class="message-day">今天</div>
+            <div class="message system">
+                <div class="message-content">
+                    <p>欢迎使用CEO专属AI参谋长"小舵"，您可以提出战略方针、经营计划、组织架构、人才队伍、激励约束机制相关问题，我会进行深度分析后给出决策建议与风险预警。</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <div class="chat-input">
+                <div class="tool-btn camera-btn">
+                    <i class="ri-camera-line"></i>
+                </div>
+                <input type="text" class="input-area" placeholder="向小舵发送消息" autofocus>
+                <div class="input-tools">
+                    <div class="tool-btn">
+                        <i class="ri-mic-line"></i>
+                    </div>
+                    <div class="tool-btn plus-btn">
+                        <i class="ri-add-line"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 添加扩展菜单，默认隐藏 -->
+            <div class="extended-menu">
+                <div class="extended-menu-item">
+                    <div class="menu-icon">
+                        <i class="ri-camera-line"></i>
+                    </div>
+                    <div class="menu-text">拍照</div>
+                </div>
+                <div class="extended-menu-item">
+                    <div class="menu-icon">
+                        <i class="ri-image-line"></i>
+                    </div>
+                    <div class="menu-text">上传照片</div>
+                </div>
+                <div class="extended-menu-item">
+                    <div class="menu-icon">
+                        <i class="ri-file-line"></i>
+                    </div>
+                    <div class="menu-text">上传文件</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 页面加载完成后自动聚焦输入框
+        window.onload = function() {
+            document.querySelector('.input-area').focus();
+        };
+        
+        // 处理历史记录按钮点击事件
+        document.getElementById('historyBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            // 显示历史记录弹出层
+            document.getElementById('historyOverlay').style.display = 'flex';
+        });
+        
+        // 处理关闭历史记录按钮点击事件
+        document.getElementById('closeHistoryBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            // 隐藏历史记录弹出层
+            document.getElementById('historyOverlay').style.display = 'none';
+        });
+        
+        // 点击弹出层背景关闭
+        document.getElementById('historyOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+        
+        // 处理"+"按钮点击事件
+        const plusBtn = document.querySelector('.plus-btn');
+        const extendedMenu = document.querySelector('.extended-menu');
+        let plusMenuVisible = false;
+        
+        plusBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (plusMenuVisible) {
+                extendedMenu.style.display = 'none';
+            } else {
+                extendedMenu.style.display = 'flex';
+            }
+            plusMenuVisible = !plusMenuVisible;
+        });
+        
+        // 点击其他区域关闭扩展菜单
+        document.addEventListener('click', function(e) {
+            if (!plusBtn.contains(e.target) && !extendedMenu.contains(e.target) && plusMenuVisible) {
+                extendedMenu.style.display = 'none';
+                plusMenuVisible = false;
+            }
+        });
+        
+        // 处理相机按钮点击事件
+        const cameraBtn = document.querySelector('.camera-btn');
+        cameraBtn.addEventListener('click', function() {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                alert('正在打开相机...');
+            } else {
+                alert('您的设备不支持相机功能');
+            }
+        });
+        
+        // 实现消息发送功能
+        function sendMessage() {
+            const inputArea = document.querySelector('.input-area');
+            const text = inputArea.value.trim();
+            if (!text) return;
+            
+            // 创建用户消息
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.innerHTML = '<div class="message-content">' + text + '</div>';
+            
+            // 添加到消息列表
+            const chatMessages = document.querySelector('.chat-messages');
+            chatMessages.appendChild(userMsg);
+            
+            // 清空输入框
+            inputArea.value = '';
+            
+            // 滚动到底部
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // 模拟小舵回复
+            setTimeout(() => {
+                // 显示正在输入
+                const typingMsg = document.createElement('div');
+                typingMsg.className = 'message system typing';
+                typingMsg.innerHTML = '<div class="message-content">小舵正在思考...</div>';
+                chatMessages.appendChild(typingMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // 模拟回复延迟
+                setTimeout(() => {
+                    // 移除"正在输入"提示
+                    chatMessages.removeChild(typingMsg);
+                    
+                    // 添加系统回复
+                    const systemMsg = document.createElement('div');
+                    systemMsg.className = 'message system';
+                    systemMsg.innerHTML = '<div class="message-content">欢迎使用CEO专属AI参谋长"小舵"，您可以提出战略方针、经营计划、组织架构、人才队伍、激励约束机制相关问题，我会进行深度分析后给出决策建议与风险预警。</div>';
+                    chatMessages.appendChild(systemMsg);
+                    
+                    // 滚动到底部
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    
+                }, 1500);
+            }, 500);
+        }
+        
+        // 监听输入框回车事件
+        document.querySelector('.input-area').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        // 处理新会话按钮点击事件
+        document.getElementById('settingsBtn').addEventListener('click', function() {
+            // 跳转到设置页面
+            window.location.href = 'shezhi.html';
+        });
+    </script>
+</body>
+</html> 
